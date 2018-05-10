@@ -24,7 +24,7 @@ before_build:
     mkdir build
     cd build
     cmake --version
-    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -D DEPENDS_ZLIB_DIR=C:/projects/zlib
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017"
     
 build:
   project: c:\projects\cmake-init\build\template.sln
