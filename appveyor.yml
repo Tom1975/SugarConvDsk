@@ -1,4 +1,8 @@
 version: '{build}'
+
+environment:
+  ZLIB_VERSION: 1.2.8.4
+  
 branches:
   only:
   - master
@@ -7,17 +11,24 @@ clone_folder: c:\projects\cmake-init
 image:
 - Visual Studio 2017
 configuration:
-- Release
+- Release   
 - Debug
 platform:
 - Win32
 
+install:
+  - ps: |
+    Write-Output "Installing zlib $($env:ZLIB_VERSION)"
+    & nuget install zlib-"msvc15"-$($env:PLATFORM)-master -Version $env:ZLIB_VERSION -Source https://ci.appveyor.com/nuget/zlib-shallow-x0n34b3pfq1b
+    Rename-Item -path zlib-"msvc15"-$($env:PLATFORM)-master.$($env:ZLIB_VERSION) -newName zlib
+    
 before_build:
 - cmd: |-
     mkdir build
     cd build
     cmake --version
-    cmake ..\SugarConvDsk -G "Visual Studio 15 2017"
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -D DEPENDS_ZLIB_DIR=C:/projects/zlib
+    
 build:
   project: c:\projects\cmake-init\build\template.sln
   verbosity: minimal
