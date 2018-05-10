@@ -11,7 +11,6 @@ script:
   - export CC=gcc-7
   - export CXX=g++-7
   
-  
 script:
   # Link gcc-7 and g++-7 to their standard commands
   - ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
