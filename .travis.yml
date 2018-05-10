@@ -1,30 +1,22 @@
-dist: trusty
 language: cpp
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-7
-      - g++-7
-script:
-  - export CC=gcc-7
-  - export CXX=g++-7
+dist: trusty
+
+#limit to git depth to 1 because don't use any git command in this script
+git:
+  depth: 1
   
+before_install:
+#g++ 7
+- echo 'Installing G++ 7'
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-7; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50
+
 script:
-  # Link gcc-7 and g++-7 to their standard commands
-  - ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
-  - ln -s /usr/bin/g++-7 /usr/local/bin/g++
-  # Export CC and CXX to tell cmake which compiler to use
-  - export CC=/usr/bin/gcc-7
-  - export CXX=/usr/bin/g++-7
-  # Check versions of gcc, g++ and cmake
-  - gcc -v && g++ -v && cmake --version
-  # Run your build commands next
-    
 # SugarConvDsk
 - echo 'Generating makefile'
 - cd SugarConvDsk
 - cmake .
 - make all
-

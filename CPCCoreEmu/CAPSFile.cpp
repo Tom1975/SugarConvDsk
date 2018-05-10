@@ -1868,7 +1868,7 @@ int CAPSFile::CreateData(IDisk* disk, int side, unsigned int tr, int datakey)
 
          block_descriptor.block_flag = 0;
          block_descriptor.data_offset = data.offset;
-         block_descriptor.encoder_specific.sps_specific.gap_offset = gap_data.offset;
+         block_descriptor.sps_specific.gap_offset = gap_data.offset;
 
 
          unsigned int search_next_offset = FindNextSector(track_field, disk->side_[side].tracks[tr].size,
@@ -1955,7 +1955,7 @@ int CAPSFile::CreateData(IDisk* disk, int side, unsigned int tr, int datakey)
 
             // Block descriptor : End the description
             block_descriptor.block_bits = (offset_gap - search_offset);
-            block_descriptor.encoder_specific.sps_specific.cell_type = 1;
+            block_descriptor.sps_specific.cell_type = 1;
             block_descriptor.encoder_type = 1;
 
             if (!byte_size)
@@ -1998,7 +1998,7 @@ int CAPSFile::CreateData(IDisk* disk, int side, unsigned int tr, int datakey)
         ++)
    {
       // Adjust gap offset
-      it->encoder_specific.sps_specific.gap_offset += final_gap_offset;
+      it->sps_specific.gap_offset += final_gap_offset;
       // Adjust data offset
       it->data_offset += final_data_offset;
 

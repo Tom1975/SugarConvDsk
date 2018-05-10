@@ -141,13 +141,7 @@ protected:
    {
       unsigned int block_bits;
       unsigned int gap_bits;
-
-      union
-      {
-         EncoderCapsBlockDescriptor caps_specific;
-         EncoderSpsBlockDescriptor sps_specific;
-      } encoder_specific;
-
+      EncoderSpsBlockDescriptor sps_specific;
       unsigned int encoder_type;
       unsigned int block_flag;
       unsigned int gap_value;
