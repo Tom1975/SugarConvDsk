@@ -5,15 +5,16 @@ dist: trusty
 git:
   depth: 1
   
-addons:
+before_install:
+#g++ 7.2
+- echo 'Installing G++ 7.2'
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-7.2; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-7.2" CC="gcc-7.2"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7.2 50
 
-    apt:
-        update: true
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - g++-7
-    
+before_install:    
 # SugarConvDsk
 - echo 'Generating makefile'
 - cd SugarConvDsk
