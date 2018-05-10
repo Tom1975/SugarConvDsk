@@ -17,14 +17,16 @@ platform:
 - Win32
 
 install:
+  - mkdir deps
   - ps: nuget install zlib_native 
+  - ps: move zlib*\* deps -force
     
 before_build:
 - cmd: |-
     mkdir build
     cd build
     cmake --version
-    cmake ..\SugarConvDsk -G "Visual Studio 15 2017"
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -DZLIB_INCLUDE_DIR=deps -DZLIB_LIBRARY=deps\lib\Win32\Release\zlib.lib
     
 build:
   project: c:\projects\cmake-init\build\template.sln
