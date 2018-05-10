@@ -19,8 +19,9 @@ platform:
 install:
   - mkdir deps
   - ps: nuget install zlib_native 
-  - ps: move zlib*\* deps -force
-    
+  - ps: move zlib*\native\include deps -force
+  - ps: move zlib*\native\lib\Win32\Release\zlib.lib deps -force
+  
 before_build:
 - cmd: |-
     mkdir build
