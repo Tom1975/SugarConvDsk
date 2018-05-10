@@ -1,6 +1,7 @@
 # SugarConvDsk
 
 [![Build Status](https://travis-ci.com/Tom1975/SugarConvDsk.svg?branch=master)](https://travis-ci.com/Tom1975/SugarConvDsk)
+[![Build status](https://ci.appveyor.com/api/projects/status/oq746hdj4wrn8rod?svg=true)](https://ci.appveyor.com/project/Tom1975/sugarconvdsk)
 
 Convert any Amstrad CPC dump file format to other format
 
