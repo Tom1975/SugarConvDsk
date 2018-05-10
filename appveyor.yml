@@ -30,7 +30,7 @@ before_build:
     cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -DZLIB_INCLUDE_DIR=deps -DZLIB_LIBRARY=deps\lib\Win32\Release\zlib.lib
     
 build:
-  project: c:\projects\cmake-init\build\template.sln
+  project: c:\projects\cmake-init\build\SugarConvDsk.sln
   verbosity: minimal
   parallel: true
 only_commits:
