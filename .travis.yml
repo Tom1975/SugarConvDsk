@@ -6,15 +6,13 @@ git:
   depth: 1
   
 addons:
+
     apt:
-      update: true
-      
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
+        update: true
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - g++-7
     
 # SugarConvDsk
 - echo 'Generating makefile'
