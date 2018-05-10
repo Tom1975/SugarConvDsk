@@ -19,4 +19,6 @@ Format writtable are :
 - IPF 
 - SCP
 
-This tool mainly convert any format into an interna
+This tool mainly convert any format into an internal format, then write it back to the specified one.
+Internal format is bases on MFM, with some specific attributes for every bit, which can be weak or optional.
+The internal format is also not revolution-dependant : If a dump use more than one revolution, to keep track of weak sector for example, a specific algorithm will rebuild a single track from these revolutions, adding the attributes needed to describe everything. Also, an error correction is done, to avoid being fooled by reading error.
