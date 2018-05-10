@@ -17,9 +17,8 @@ platform:
 - Win32
 
 install:
-  - ps: |
-    Write-Output "Installing zlib $($env:ZLIB_VERSION)"
-    & nuget install zlib-${"msvc15"}-$($env:PLATFORM)-master -Version $env:ZLIB_VERSION -Source https://ci.appveyor.com/nuget/zlib-shallow-x0n34b3pfq1b
+  - ps: |-
+    nuget install zlib-${"msvc15"}-$($env:PLATFORM)-master -Version $env:ZLIB_VERSION -Source https://ci.appveyor.com/nuget/zlib-shallow-x0n34b3pfq1b
     Rename-Item -path zlib-${"msvc15"}-$($env:PLATFORM)-master.$($env:ZLIB_VERSION) -newName zlib
     
 before_build:
