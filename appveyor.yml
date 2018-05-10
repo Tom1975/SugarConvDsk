@@ -11,31 +11,13 @@ configuration:
 - Debug
 platform:
 - Win32
-environment:
-  matrix:
-  - arch: Win32
-  # - arch: #does not work, Release|x64 not a valid target
-matrix:
-  fast_finish: true
-
-# skip unsupported combinations
-init:
-- set arch=
-- if "%arch%"=="Win64" ( set arch= Win64)
-- if "%arch%"=="Win32" ( set arch= )
-- echo %arch%
-- echo %APPVEYOR_BUILD_WORKER_IMAGE%
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
-- echo %generator%
 
 before_build:
 - cmd: |-
     mkdir build
     cd build
     cmake --version
-    cmake ..\SugarConvDsk -G %generator%
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017"
 build:
   project: c:\projects\cmake-init\build\template.sln
   verbosity: minimal
