@@ -14,7 +14,7 @@ before_install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-7.2" CC="gcc-7.2"; fi
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7.2 50
 
-before_install:    
+  
 # SugarConvDsk
 - echo 'Generating makefile'
 - cd SugarConvDsk
