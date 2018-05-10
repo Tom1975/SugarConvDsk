@@ -186,7 +186,7 @@ void IDisk::SetWrite(int side, unsigned int track)
 
 
 int IDisk::AddByteWithoutCrc(unsigned char* track, int index, unsigned char b, bool bSync)
-{ 
+{
    return bSync ? AddSyncByteToTrack(track, index, b) : AddByteToTrack(track, index, b);
 }
 
@@ -359,11 +359,11 @@ unsigned char IDisk::GetNextBit(int side, int track)
    if ((value & BIT_OPTIONAL) == BIT_OPTIONAL)
    {
       bool one_more;
-      
+
       {
          one_more = rand() & 0x1;
       }
-      
+
       if (one_more)
       {
          ++head_position_;
@@ -2688,7 +2688,7 @@ int IDisk::SmartOpen(FILE** file, const char* file_path, const char* file_ext)
 #ifdef _WIN32
    if (file_ext != nullptr && stricmp(file_path + strlen(file_path) - strlen(file_ext), file_ext) != 0)
 #else
-   if (FileExt_P != NULL && strcmp(FilePath_P + strlen(FilePath_P) - strlen(FileExt_P), FileExt_P) != 0)
+   if (file_ext != NULL && strcmp(file_path + strlen(file_path) - strlen(file_ext), file_ext) != 0)
 #endif
    {
       // Add extension
