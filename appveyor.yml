@@ -17,7 +17,7 @@ platform:
 - Win32
 
 install:
-  - ps: nuget install zlib-native 
+  - ps: nuget install zlib_native 
     
 before_build:
 - cmd: |-
