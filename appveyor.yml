@@ -21,13 +21,14 @@ install:
   - ps: nuget install zlib_native 
   - ps: move zlib*\build\native\include\* deps -force
   - ps: move zlib*\build\native\lib\Win32\Release\zlib.lib deps -force
+  - ps: dir deps
   
 before_build:
 - cmd: |-
     mkdir build
     cd build
     cmake --version
-    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -DZLIB_INCLUDE_DIR=deps -DZLIB_LIBRARY=deps\native\lib\Win32\Release\zlib.lib
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -DZLIB_INCLUDE_DIR=deps -DZLIB_LIBRARY=deps\zlib.lib
     
 build:
   project: c:\projects\cmake-init\build\SugarConvDsk.sln
