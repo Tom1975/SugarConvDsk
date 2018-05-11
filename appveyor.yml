@@ -1,0 +1,42 @@
+version: '{build}'
+
+environment:
+  ZLIB_VERSION: 1.2.8.4
+  
+branches:
+  only:
+  - master
+  - appveyor_setup
+clone_folder: c:\projects\cmake-init
+image:
+- Visual Studio 2017
+configuration:
+- Release   
+- Debug
+platform:
+- Win32
+
+install:
+  - mkdir deps
+  - ps: nuget install zlib_native 
+  - ps: move zlib*\build\native\include\* deps -force
+  - ps: move zlib*\build\native\lib\Win32\Release\zlib.lib deps -force
+  - ps: dir deps
+  
+before_build:
+- cmd: |-
+    mkdir build
+    cd build
+    cmake --version
+    cmake ..\SugarConvDsk -G "Visual Studio 15 2017" -DZLIB_INCLUDE_DIR=..\deps -DZLIB_LIBRARY=..\deps\zlib.lib
+    
+build:
+  project: c:\projects\cmake-init\build\SugarConvDsk.sln
+  verbosity: minimal
+  parallel: true
+only_commits:
+  files:
+    - CMakeLists.txt
+    - appveyor.yml
+    - SugarConvDsk/
+    - CPCCoreEMu/
