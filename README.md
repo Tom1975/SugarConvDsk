@@ -49,10 +49,10 @@ Compilation
 =
 This tool can be compiled on various system.
 Known working targets are :
- - Win32
- - Ubuntu
+ - Windows : Both x64 and x86
+ - Ubuntu 
 
-The tool use CMake as makefile generator, and ZLib as an external library.
+The tool use CMake as makefile generator, and zLib as an external library.
 Also, a modern compiler is required as it use some C++17 features (through experimental/filesystem for gcc7.2 and Visual 2017 15.6).
 
 The code is a result of various and extended experimentation, so it may looks like a bit messy (as I tried to make it works before making it right)

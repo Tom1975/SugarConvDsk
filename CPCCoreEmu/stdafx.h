@@ -16,7 +16,7 @@
 #define _CRT_NONSTDC_NO_DEPRECATE
 #define _CRTDBG_MAP_ALLOC
 
-#include <experimental\filesystem>
+#include <filesystem>
 namespace fs = std::experimental::filesystem;
 #elif __MORPHOS__
 #else

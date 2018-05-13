@@ -35,6 +35,8 @@ set(HEADERS
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskBuilder.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskContainer.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskGen.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DskTypeManager.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FDC765.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FileAccess.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeCTRAW.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeEDSK.h
@@ -44,6 +46,10 @@ set(HEADERS
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeRAW.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeSCP.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/IDisk.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/ILoadingProgress.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/ILog.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/includes.h
+	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/macro.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/MediaManager.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/stdafx.h
 )
