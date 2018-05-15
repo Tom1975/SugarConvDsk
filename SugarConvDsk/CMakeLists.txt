@@ -1,14 +1,10 @@
-
 cmake_minimum_required(VERSION 3.0)
 project(SugarConvDsk)
-
-MESSAGE(STATUS "SugarConvDsk project : CMAKE_CURRENT_LIST_DIR = " ${CMAKE_CURRENT_LIST_DIR})
 
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
     include_directories( ${ZLIB_INCLUDE_DIRS} )
 endif( ZLIB_FOUND )
-
 
 set(SRCS
 	main.cpp
@@ -57,11 +53,10 @@ set(HEADERS
 #Fichier ressource
 
 add_definitions( -D_CONSOLE)
-
 add_executable(SugarConvDsk ${SRCS} ${HEADERS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu)
 
-target_include_directories( SugarConvDsk PUBLIC ${CPCCORE} ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_LIST_DIR}/CPCCoreEmu)
+target_include_directories( SugarConvDsk PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu )
 
 set(CompilerFlags
         CMAKE_CXX_FLAGS

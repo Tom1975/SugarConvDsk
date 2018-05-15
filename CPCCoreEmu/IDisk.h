@@ -243,7 +243,7 @@ public:
       unsigned int nb_revolutions;
       // These data are final data. Revolution will disapear !
       unsigned char* bitfield;
-      size_t size;
+      unsigned int size;
    } MFMTrack;
 
    // MFM Tracks

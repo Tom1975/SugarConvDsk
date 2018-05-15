@@ -217,7 +217,7 @@ int CAPSFile::ReadBuffer(const unsigned char* buffer, unsigned int size_of_buffe
          data_item.size = ExtractInt(&block[offset]);
          offset += 4;
          // Bitsize
-         data_item.bit_szie = ExtractInt(&block[offset]);
+         data_item.bit_size = ExtractInt(&block[offset]);
          offset += 4;
          // CRC
          data_item.data_crc = ExtractInt(&block[offset]);
@@ -1980,7 +1980,7 @@ int CAPSFile::CreateData(IDisk* disk, int side, unsigned int tr, int datakey)
    // End : Now compile every descriptor, then every datas ( ).
    // dataoffset and gapoffsets
    memcpy(data_chunk.header.type, "DATA", 4);
-   data_chunk.header.length = sizeof (data_chunk) - 4; //+ listBlockDescriptor.size() * sizeof(tBlockDescriptor);
+   data_chunk.header.length = sizeof (data_chunk) - sizeof (unsigned char*); //+ listBlockDescriptor.size() * sizeof(tBlockDescriptor);
    //dataChunk.header.Length += data.Offset + gapData.Offset;
    data_chunk.size = list_block_descriptor.size() * sizeof(BlockDescriptor);
    int final_gap_offset = data_chunk.size;
@@ -1988,7 +1988,7 @@ int CAPSFile::CreateData(IDisk* disk, int side, unsigned int tr, int datakey)
 
    data_chunk.size += gap_data.offset;
    data_chunk.size += data.offset;
-   data_chunk.bit_szie = data_chunk.size * 8;
+   data_chunk.bit_size = data_chunk.size * 8;
 
    // Now compile DATA chunks into a buffer
    data_chunk.buffer = new unsigned char[data_chunk.size];
@@ -2097,9 +2097,9 @@ int CAPSFile::WriteToBuffer(unsigned char* buffer, unsigned int size_of_buffer)
          it->header.crc = 0;
          int lg = it->header.length;
 
-         memcpy(&buffer[offset], &(*it), sizeof(DataChunks) - 4);
-         Swap(&buffer[offset + 4], sizeof(DataChunks) - 8);
-         offset += sizeof(DataChunks) - 4;
+         memcpy(&buffer[offset], &(*it), sizeof(DataChunks) - sizeof(unsigned char*));
+         Swap(&buffer[offset + 4], sizeof(DataChunks) - (4+ sizeof(unsigned char*)));
+         offset += sizeof(DataChunks) - sizeof(unsigned char*);
 
          memcpy(&buffer[offset], it->buffer, it->size);
          offset += it->size;

@@ -27,6 +27,8 @@ SOFTWARE.*/
 #include "ILoadingProgress.h"
 #include "IDisk.h"
 
+#pragma pack(4)
+
 class CAPSFile
 {
 public:
@@ -119,7 +121,7 @@ protected:
    {
       RecordHeader header;
       DWORD size;
-      DWORD bit_szie;
+      DWORD bit_size;
       DWORD data_crc;
       DWORD data_id;
       unsigned char* buffer;
