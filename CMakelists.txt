@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.0)
+
+# Nom du projet
+project(SugarConvDsk)
+
+add_subdirectory(zlib)
+add_subdirectory(SugarConvDsk)
+add_subdirectory(googletest)
+add_subdirectory(Tests)
+
