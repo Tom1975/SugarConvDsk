@@ -15,9 +15,6 @@ set(CompilerFlags
         CMAKE_CXX_FLAGS_RELWITHDEBINFO
 		_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING 
         )
-foreach(CompilerFlag ${CompilerFlags})
-  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
 
 add_executable( Tests  
 					test.cpp

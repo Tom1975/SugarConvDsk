@@ -13,16 +13,13 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// LOADING TEST : These test check that loading will give same result from a file and from a buffer
-///
-/// - For a disk (with every supported format)
-/// - For a tape (with every supported format)
+/// TODO : Framework is here, just add the tests !
 
 
 /////////////////////////////////////////////////////////////
 // Check that LoadDiskFromBuffer have the same generated disk than LoadDisk
 
-TEST(Base, Dummy)
+TEST(Dummy, Dummy)
 {
 }
 

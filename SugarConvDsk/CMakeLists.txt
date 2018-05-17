@@ -69,16 +69,11 @@ endif()
 
 set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
-
-foreach(CompilerFlag ${CompilerFlags})
-  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
-
 include_directories (SugarConvDsk
 					 )
 
 if(MSVC)
-	target_link_libraries ( SugarConvDsk zlibstatic )
+	target_link_libraries ( SugarConvDsk zlibstatic)
 else ()
 	target_link_libraries ( SugarConvDsk  m stdc++fs)
 endif()
