@@ -75,6 +75,6 @@ include_directories (SugarConvDsk
 if(MSVC)
 	target_link_libraries ( SugarConvDsk zlibstatic)
 else ()
-	target_link_libraries ( SugarConvDsk  m stdc++fs zlibstatic)
+	target_link_libraries ( SugarConvDsk  m stdc++fs zlib)
 endif()
 
