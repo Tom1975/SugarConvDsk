@@ -17,6 +17,9 @@ before_install:
 script:
 # SugarConvDsk
 - echo 'Generating makefile'
-#- cd SugarConvDsk
+- cd zlib
+- cmake .
+- make all
+- cd SugarConvDsk
 - cmake .
 - make all
