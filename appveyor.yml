@@ -6,7 +6,6 @@ environment:
 branches:
   only:
   - master
-  - appveyor_setup
 clone_folder: c:\projects\cmake-init
 image:
 - Visual Studio 2017
@@ -17,7 +16,8 @@ platform:
 - Win32
 
 install:
-
+- cmd: git submodule init 
+- cmd: git submodule update
   
 before_build:
 - cmd: |-
