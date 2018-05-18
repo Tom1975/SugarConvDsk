@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(Tests)
+enable_testing()
+
+include_directories( ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${SugarConvDsk})
+
+set(CompilerFlags
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
+		_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING 
+        )
+
+add_executable( Tests  
+					test.cpp
+)
+
+# Link test executable against gtest & gtest_main
+target_link_libraries(Tests Shlwapi.lib Comctl32.lib XmlLite.lib gtest gtest_main
+                                             Msimg32.lib 
+                                             Winmm.lib)
+
+add_test( NAME Tests COMMAND Tests)

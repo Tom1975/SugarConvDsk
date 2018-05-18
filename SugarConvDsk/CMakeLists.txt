@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(SugarConvDsk)
 
-find_package( ZLIB REQUIRED )
-if ( ZLIB_FOUND )
-    include_directories( ${ZLIB_INCLUDE_DIRS} )
-endif( ZLIB_FOUND )
-
 set(SRCS
 	main.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/CAPSFile.cpp
@@ -54,9 +49,9 @@ set(HEADERS
 
 add_definitions( -D_CONSOLE)
 add_executable(SugarConvDsk ${SRCS} ${HEADERS})
-include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_BINARY_DIR}/../zlib)
 
-target_include_directories( SugarConvDsk PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu )
+target_include_directories( SugarConvDsk PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_LIST_DIR}/../zlib)
 
 set(CompilerFlags
         CMAKE_CXX_FLAGS
@@ -74,18 +69,12 @@ endif()
 
 set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
-
-foreach(CompilerFlag ${CompilerFlags})
-  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
-
 include_directories (SugarConvDsk
-					 ${ZLIBDIR}/lib
 					 )
 
 if(MSVC)
-	target_link_libraries ( SugarConvDsk ${ZLIB_LIBRARY} )
+	target_link_libraries ( SugarConvDsk zlibstatic)
 else ()
-	target_link_libraries ( SugarConvDsk ${ZLIB_LIBRARY} m stdc++fs)
+	target_link_libraries ( SugarConvDsk  m stdc++fs libz.a)
 endif()
 
