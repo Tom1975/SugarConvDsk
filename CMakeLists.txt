@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 # Nom du projet
 project(SugarConvDsk)
 
-set (gtest_force_shared_crt ON)
+set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_subdirectory(zlib)
 add_subdirectory(SugarConvDsk)
