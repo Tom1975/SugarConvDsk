@@ -20,6 +20,6 @@ script:
 - cd zlib
 - cmake .
 - make all
-- cd SugarConvDsk
+- cd ../SugarConvDsk
 - cmake .
 - make all
