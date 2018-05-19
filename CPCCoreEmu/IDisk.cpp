@@ -1415,17 +1415,6 @@ void IDisk::CreateSingleTrackFromMultiRevolutions(int side, int track)
       // Otherwise
       Track track_buffer;
 
-      if (track == 0x0D)
-      {
-         for (int i = 0; i < 5; i++)
-         {
-            LOG("TRACK 0x0D - Rev ");
-            LOG(i);
-            LOGEOL;
-            DumpTrackRev(0, 0x0D, 0);
-         }
-      }
-
       if (!CreateTrackFromRevolution(side, track))
       {
          for (unsigned int rev = 0; rev < side_[side].tracks[track].nb_revolutions; rev++)
