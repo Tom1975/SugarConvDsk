@@ -7,7 +7,6 @@ set(SRCS
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/CRC.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskBuilder.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskContainer.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskGen.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FileAccess.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeCTRAW.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FormatTypeEDSK.cpp
@@ -25,7 +24,6 @@ set(HEADERS
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/CRC.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskBuilder.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskContainer.h
-	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DiskGen.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/DskTypeManager.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FDC765.h
 	${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu/FileAccess.h

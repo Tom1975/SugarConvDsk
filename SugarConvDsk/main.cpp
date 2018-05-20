@@ -7,141 +7,183 @@
 //
 //
 //////////////////////////////////////////////////////////
-#include "DiskBuilder.h"
-
-static DiskBuilder disk_builder;
-std::vector<FormatType*> out_format_list;
-std::vector<FormatType*> in_format_list;
 
 #ifdef __MORPHOS__
 
 #include "stdafx.h"
 #include "DiskGen.h"
+#include "DiskBuilder.h"
+#include "FormatTypeCTRAW.h"
+#include "FormatTypeDSK.h"
+#include "FormatTypeEDSK.h"
+#include "FormatTypeHFE.h"
+#include "FormatTypeIPF.h"
+#include "FormatTypeRAW.h"
+#include "FormatTypeSCP.h"
 
 #include <proto/dos.h>
 
-#define __TEXTSEGMENT__ __attribute__((section(".text")))
-#define __UNUSED__ __attribute__ ((__unused__))
-
 #define PROGRAM_NAME      "SugarConvDsk"
-#define PROGRAM_VERSION   "0.1"
-#define PROGRAM_DATE      "18/02/2018"
-#define PROGRAM_COPYRIGHT "© 2018 Thomas Guillemin, MorphOS port by Philippe Rimauro"
-#define PROG_ARG_TEMPLATE "FROM/A,TO,IPF/S,SCP/S,HFE/S,DSK/S,SIDEA/S,SIDEB/S,QUIET/S"
+#define PROGRAM_VERSION   "1.0"
+#define PROGRAM_DATE      "20/05/2018"
+#define PROGRAM_COPYRIGHT "© 2016-2018 Thomas Guillemin, MorphOS port by Philippe Rimauro"
+
+// Regular AmigaDOS CLI arguments template for ReadArgs()
+#define PROG_ARG_TEMPLATE "FROM/A,A=SIDEA/S,B=SIDEB/S,TO,CAPS=IPF/S,SUPERCARDPRO=SCP/S,HXC=HFE/S,EXTENDEDDSK=EDSK/S,QUIET/S"
 
 struct ProgArgs
 {
-    STRPTR  pa_SrcFileName;
-    STRPTR  pa_DstFileName;
-    IPTR    pa_DstIPF;
-    IPTR    pa_DstSCP;
-    IPTR    pa_DstHFE;
-    IPTR    pa_DstDSK;
-    IPTR    pa_SrcSideA;
-    IPTR    pa_SrcSideB;
-    IPTR    pa_Quiet;
+   STRPTR  pa_SrcFileName;    // FROM/A
+   IPTR    pa_SrcSideA;       // A=SIDEA/S
+   IPTR    pa_SrcSideB;       // B=SIDEB/S
+   STRPTR  pa_DstFileName;    // TO
+   IPTR    pa_DstIPF;         // CAPS=IPF/S
+   IPTR    pa_DstSCP;         // SUPERCARDPRO=SCP/S
+   IPTR    pa_DstHFE;         // HXC=HFE/S
+   IPTR    pa_DstExtendedDSK; // EXTENDEDDSK=EDSK/S
+   IPTR    pa_Quiet;          // QUIET/S
 };
 
-const UBYTE __TEXTSEGMENT__ ver_version[] = { "\0$VER: " PROGRAM_NAME " " PROGRAM_VERSION " (" PROGRAM_DATE ") " PROGRAM_COPYRIGHT "" };
-const ULONG __abox__ = 1;
+// Regular Amiga compliant version string
+const UBYTE __attribute__((section(".text"))) ver_version[] = { "\0$VER: " PROGRAM_NAME " " PROGRAM_VERSION " (" PROGRAM_DATE ") " PROGRAM_COPYRIGHT "" };
 
 #define QuietPrintf(quiet, format, ...) do { if(!(quiet)) { Printf((format), ##__VA_ARGS__); } } while(0)
 #define SideSwitchesToEnum(a,b) (((a)&&(b))?IDisk::FACE_BOTH:((a)?IDisk::FACE_1:((b)?IDisk::FACE_2:IDisk::FACE_BOTH)))
 
-int main(int argc, char *argv[])
+int main(void)
 {
-    IDisk::tFaceSelection srcSide;
-    IDisk::tFormatSupport dstFormat;
-    CDiskGen diskGen;
-    LONG rc = RETURN_OK;
+   IDisk::FaceSelection srcSide;
+   DiskGen diskGen;
+   LONG rc = RETURN_OK;
 
-    struct RDArgs *rdProgArgs = NULL;
-    struct ProgArgs progArgs = { 0 };
+   struct RDArgs *rdProgArgs = NULL;
+   struct ProgArgs progArgs = { NULL, FALSE, FALSE, NULL, FALSE, FALSE, FALSE, FALSE, FALSE };
 
-    if((rdProgArgs = ReadArgs(PROG_ARG_TEMPLATE, (LONG *)&progArgs, NULL)) == NULL)
-    {
-        PrintFault(IoErr(), PROGRAM_NAME);
-        rc = RETURN_ERROR;
-        goto out;
+   if ((rdProgArgs = ReadArgs(PROG_ARG_TEMPLATE, (LONG *)&progArgs, NULL)) == NULL)
+   {
+      rc = IoErr();
+      goto out;
+   }
+
+   // Manage default values
+   // Note: pa_DstFileName is mandatory (/A) and already handled by ReadArgs()
+
+   // Default destination name is source name (new extension will be appened automatically)
+   if (progArgs.pa_DstFileName == NULL)
+   {
+      progArgs.pa_DstFileName = progArgs.pa_SrcFileName;
+   }
+
+   // Convert to IPF by default
+   if (!progArgs.pa_DstIPF
+      && !progArgs.pa_DstSCP
+      && !progArgs.pa_DstHFE
+      && !progArgs.pa_DstExtendedDSK)
+   {
+      progArgs.pa_DstIPF = TRUE;
+   }
+
+   // Note: handle both sides by default
+   srcSide = SideSwitchesToEnum(progArgs.pa_SrcSideA, progArgs.pa_SrcSideB);
+
+   QuietPrintf(progArgs.pa_Quiet, "Converting %s...\n", progArgs.pa_SrcFileName);
+
+   // Load the disk
+   if (diskGen.LoadDisk(progArgs.pa_SrcFileName) != 0)
+   {
+      rc = ERROR_OBJECT_WRONG_TYPE;
+      goto out;
+   }
+
+   // Filter side
+   switch (diskGen.FilterSide(srcSide))
+   {
+   case IDisk::FaceSelection::FACE_1:
+   case IDisk::FaceSelection::FACE_2:
+   case IDisk::FaceSelection::FACE_BOTH:
+      break;
+   default:
+      rc = ERROR_SEEK_ERROR;
+      goto out;
+   }
+
+   // Save with the correct format
+   if (progArgs.pa_DstIPF)
+   {
+      FormatTypeIPF formatType;
+
+      if (formatType.SaveDisk(progArgs.pa_DstFileName, diskGen.GetDisk()) == FormatType::OK)
+      {
+         QuietPrintf(progArgs.pa_Quiet, "IPF file `%s` saved.\n", diskGen.GetCurrentLoadedDisk());
+      }
+      else
+      {
+         QuietPrintf(progArgs.pa_Quiet, "IPF file `%s` could not be saved.\n", diskGen.GetCurrentLoadedDisk());
+         rc = RETURN_WARN;
+      }
+   }
+   if (progArgs.pa_DstSCP)
+   {
+      FormatTypeSCP formatType;
+
+      if (formatType.SaveDisk(progArgs.pa_DstFileName, diskGen.GetDisk()) == FormatType::OK)
+      {
+         QuietPrintf(progArgs.pa_Quiet, "SCP file `%s` saved.\n", diskGen.GetCurrentLoadedDisk());
+      }
+      else
+      {
+         QuietPrintf(progArgs.pa_Quiet, "SCP file `%s` could not be saved.\n", diskGen.GetCurrentLoadedDisk());
+         rc = RETURN_WARN;
+        }
     }
+   if (progArgs.pa_DstHFE)
+   {
+      FormatTypeHFE formatType;
 
-    // Manage default values
-// Note: pa_DstFileName already handled by ReadArgs (mandatory /A)
+      if (formatType.SaveDisk(progArgs.pa_DstFileName, diskGen.GetDisk()) == FormatType::OK)
+      {
+         QuietPrintf(progArgs.pa_Quiet, "HFE file `%s` saved.\n", diskGen.GetCurrentLoadedDisk());
+      }
+      else
+      {
+         QuietPrintf(progArgs.pa_Quiet, "HFE file `%s` could not be saved.\n", diskGen.GetCurrentLoadedDisk());
+         rc = RETURN_WARN;
+      }
+   }
+   if (progArgs.pa_DstExtendedDSK)
+   {
+      FormatTypeEDSK formatType;
 
-    // Default destination name is source name (new extension will be appened automatically)
-    if(progArgs.pa_DstFileName == NULL)
-    {
-        progArgs.pa_DstFileName = progArgs.pa_SrcFileName;
-    }
-
-    // Convert to IPF by default
-    if(!progArgs.pa_DstIPF && !progArgs.pa_DstSCP && !progArgs.pa_DstHFE && !progArgs.pa_DstDSK)
-    {
-        progArgs.pa_DstIPF = TRUE;
-    }
-
-    // Note: handle both sides by default
-    srcSide = SideSwitchesToEnum(progArgs.pa_SrcSideA, progArgs.pa_SrcSideB);
-
-    QuietPrintf(progArgs.pa_Quiet, "Converting %s...\n", progArgs.pa_SrcFileName);
-
-    // Load the disk
-    if(diskGen.LoadDisk(progArgs.pa_SrcFileName) != 0)
-    {
-        PrintFault(ERROR_OBJECT_WRONG_TYPE, PROGRAM_NAME);
-        rc = RETURN_FAIL;
-        goto out;
-    }
-
-    // Filter side
-    switch(diskGen.FilterSide(srcSide))
-    {
-    case IDisk::tFaceSelection::FACE_1:
-    case IDisk::tFaceSelection::FACE_2:
-    case IDisk::tFaceSelection::FACE_BOTH:
-        break;
-    default:
-        PrintFault(ERROR_SEEK_ERROR, PROGRAM_NAME);
-        rc = RETURN_ERROR;
-        goto out;
-    }
-
-    // Save with the correct format
-    if(progArgs.pa_DstIPF)
-    {
-        diskGen.WriteDisk(progArgs.pa_DstFileName, IDisk::IPF);
-        QuietPrintf(progArgs.pa_Quiet, "IPF file saved.\n", diskGen.GetCurrentLoadedDisk());
-    }
-    if(progArgs.pa_DstSCP)
-    {
-        diskGen.WriteDisk(progArgs.pa_DstFileName, IDisk::SCP);
-        QuietPrintf(progArgs.pa_Quiet, "SCP file saved.\n", diskGen.GetCurrentLoadedDisk());
-    }
-    if(progArgs.pa_DstHFE)
-    {
-        diskGen.WriteDisk(progArgs.pa_DstFileName, IDisk::HFE);
-        QuietPrintf(progArgs.pa_Quiet, "HFE file saved.\n", diskGen.GetCurrentLoadedDisk());
-    }
-    if(progArgs.pa_DstDSK)
-    {
-        diskGen.WriteDisk(progArgs.pa_DstFileName, IDisk::DSK);
-        QuietPrintf(progArgs.pa_Quiet, "DSK file saved.\n", diskGen.GetCurrentLoadedDisk());
-    }
+      if (formatType.SaveDisk(progArgs.pa_DstFileName, diskGen.GetDisk()) == FormatType::OK)
+      {
+         QuietPrintf(progArgs.pa_Quiet, "Extended-DSK file `%s` saved.\n", diskGen.GetCurrentLoadedDisk());
+      }
+      else
+      {
+         QuietPrintf(progArgs.pa_Quiet, "Extended-DSK file `%s` could not be saved.\n", diskGen.GetCurrentLoadedDisk());
+         rc = RETURN_WARN;
+      }
+   }
 
 out:
-    // Free up everything!
-    if(rdProgArgs)
-    {
-        FreeArgs(rdProgArgs);
-    }
+   if (rc != RETURN_OK)
+   {
+      PrintFault(rc, PROGRAM_NAME);
+   }
 
-    return rc;
+   // Free up everything!
+   if (rdProgArgs)
+   {
+      FreeArgs(rdProgArgs);
+   }
+
+   return rc;
 }
 
 #else
 
 #include "stdafx.h"
-#include "DiskGen.h"
+#include "DiskBuilder.h"
 #include "FileAccess.h"
 
 #ifdef __unix
@@ -151,10 +193,13 @@ out:
 
 #include <string.h>
 
+static DiskBuilder disk_builder;
+std::vector<FormatType*> out_format_list;
+std::vector<FormatType*> in_format_list;
+
 bool sub_dir = false;
 FormatType* out_support;
 IDisk::FaceSelection face_to_convert = IDisk::FACE_BOTH;
-DiskGen disk_gen;
 char filter[MAX_PATH] = {0};
 
 int ConversionFile(fs::path& source, fs::path& destination)

@@ -14,17 +14,17 @@ public:
 };
 
 // Inner files structure : can be either a directory (containing file) or a file.
-class Node
+class NodeFS
 {
 public:
 
-   Node();
-   virtual ~Node();
+   NodeFS();
+   virtual ~NodeFS();
 
-   Node* InsertLeaf(std::string leaf_name, unsigned char* full_buffer);
-   Node* InsertDir(std::string node_name);
-   Node* InsertFile(std::string node_name, unsigned char* full_buffer);
-   Node* InsertNode(std::string node_name);
+   NodeFS* InsertLeaf(std::string leaf_name, unsigned char* full_buffer);
+   NodeFS* InsertDir(std::string node_name);
+   NodeFS* InsertFile(std::string node_name, unsigned char* full_buffer);
+   NodeFS* InsertNode(std::string node_name);
 
    int GetNumberOfElements();
    const char* GetElementName(int& index);
@@ -36,7 +36,7 @@ public:
 
    bool is_leaf_;
 
-   std::vector<Node*> sub_node_;
+   std::vector<NodeFS*> sub_node_;
 
    // Element
    unsigned char* full_buffer_;
@@ -139,7 +139,7 @@ protected:
 
    // Filename
    std::string file_name_;
-   Node zip_file_;
+   NodeFS zip_file_;
 };
 
 
@@ -219,5 +219,5 @@ protected:
    std::vector<IContainedElement*> file_list_;
 
    // Main node!
-   Node zip_file_;
+   NodeFS zip_file_;
 };

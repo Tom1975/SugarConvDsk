@@ -1,9 +1,13 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "IDisk.h"
 #include "FDC765.h"
 
 #include <vector>
 #include <algorithm>
+
+#ifdef __MORPHOS__
+#include <proto/dos.h>
+#endif
 
 #define LOGFDC
 
@@ -186,7 +190,7 @@ void IDisk::SetWrite(int side, unsigned int track)
 
 
 int IDisk::AddByteWithoutCrc(unsigned char* track, int index, unsigned char b, bool bSync)
-{
+{ 
    return bSync ? AddSyncByteToTrack(track, index, b) : AddByteToTrack(track, index, b);
 }
 
@@ -359,11 +363,11 @@ unsigned char IDisk::GetNextBit(int side, int track)
    if ((value & BIT_OPTIONAL) == BIT_OPTIONAL)
    {
       bool one_more;
-
+      
       {
          one_more = rand() & 0x1;
       }
-
+      
       if (one_more)
       {
          ++head_position_;
@@ -2701,62 +2705,21 @@ int IDisk::SmartOpen(FILE** file, const char* file_path, const char* file_ext)
    return res;
 }
 
-#ifdef __MORPHOS__
-
-#include <proto/dos.h>
-
-void IDisk::SetName(const char *NewFilePath_P)
+void IDisk::SetName(const char* new_filepath)
 {
-   if(PathPart(NewFilePath_P) == NewFilePath_P)
+#ifdef __MORPHOS__
+   if(PathPart(new_filepath) == new_filepath)
    {
       char curDirName[MAX_PATH];
 
-      if(GetCurrentDirName(curDirName, sizeof(curDirName)));
+      if(GetCurrentDirName(curDirName, sizeof(curDirName)))
       {
-         m_CurrentDsk  = curDirName;
-         m_CurrentDsk += '/';
-         m_CurrentDsk += NewFilePath_P;
+         current_disk_path_  = curDirName;
+         current_disk_path_ += '/';
+         current_disk_path_ += new_filepath;
       }
    }
-   else
-   {
-      m_CurrentDsk = NewFilePath_P;
-   }
-}
-
-#if 0
-const char * GetFilePart(const char *path)
-{
-    return FilePart(path);
-}
-
-bool IsDirectory(const char *path)
-{
-    BOOL isDir = FALSE;
-    BPTR lock = Lock((path), SHARED_LOCK);
-
-    if(lock != (BPTR)0)
-    {
-        struct FileInfoBlock *fib = (struct FileInfoBlock *)AllocDosObject(DOS_FIB, NULL);
-
-        if(fib != NULL)
-        {
-            if(Examine(lock, fib) == DOSTRUE && fib->fib_DirEntryType >= 0)
-            {
-                isDir = TRUE;
-            }
-            FreeDosObject(DOS_FIB, fib);
-        }
-        UnLock(lock);
-    }
-    return isDir;
-}
-#endif
-
 #else
-
-void IDisk::SetName(const char* new_filepath)
-{
    fs::path path(new_filepath);
 
    if (!path.has_root_path())
@@ -2764,14 +2727,12 @@ void IDisk::SetName(const char* new_filepath)
       path = fs::current_path() / path;
       current_disk_path_ = path.filename().string();
    }
+#endif
    else
    {
       current_disk_path_ = new_filepath;
    }
 }
-
-#endif
-
 
 void IDisk::FillTrack(unsigned char* track_buffer, const unsigned char cylinder, IDisk::DiskType type,
                       unsigned int sizeOftrack)

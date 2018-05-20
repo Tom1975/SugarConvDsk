@@ -7,7 +7,9 @@
 
 
 // Definition of endianess.
+#ifdef __BIG_ENDIAN__
 #define BIG_ENDIAN
+#endif
 
 // Windows Header Files:
 #ifdef _WIN32
@@ -18,8 +20,11 @@
 
 #include <filesystem>
 namespace fs = std::experimental::filesystem;
+
 #elif __MORPHOS__
+// fs does not exist there
 #else
+
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
@@ -33,7 +38,7 @@ namespace fs = std::experimental::filesystem;
 
 
 #if defined (__unix) || (__MORPHOS__)
-#define fopen_s(pFile,filename,mode) ((*(pFile))=fopen((filename),  (mode)))==NULL
+#define fopen_s(pFile,filename,mode) (((*(pFile))=fopen((filename), (mode))) == NULL)
 #include <sys/stat.h>
 #endif
 //#include <io.h>

@@ -58,8 +58,8 @@ unsigned short ExtractShort(const unsigned char* in)
    return_value = in[1]
       + (in[0] << 8);
 #else
-   return_value = pIn[0]
-      + (pIn[1] << 8);
+   return_value = in[0]
+      + (in[1] << 8);
 
 #endif
 
@@ -75,10 +75,10 @@ unsigned int ExtractInt(const unsigned char* in)
       + (in[1] << 16)
       + (in[0] << 24);
 #else
-   return_value = pIn[0]
-      + (pIn[1] << 8)
-      + (pIn[2] << 16)
-      + (pIn[3] << 24);
+   return_value = in[0]
+      + (in[1] << 8)
+      + (in[2] << 16)
+      + (in[3] << 24);
 
 #endif
 

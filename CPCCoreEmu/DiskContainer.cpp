@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "DiskContainer.h"
+
 #include "zlib.h"
 
 
@@ -10,11 +11,11 @@
 /////////////////////////////////////////////////////////////////
 // Node  Implementation
 /////////////////////////////////////////////////////////////////
-Node::Node() : buffer_(nullptr), offset_(0), type_(-1)
+NodeFS::NodeFS() : buffer_(nullptr), offset_(0), type_(-1)
 {
 }
 
-Node::~Node()
+NodeFS::~NodeFS()
 {
    for (auto& it : sub_node_)
    {
@@ -24,7 +25,7 @@ Node::~Node()
    delete[]buffer_;
 }
 
-void Node::AddElementsToList(std::vector<SingleElements>& list, int type)
+void NodeFS::AddElementsToList(std::vector<SingleElements>& list, int type)
 {
    if (type_ == type)
    {
@@ -36,16 +37,16 @@ void Node::AddElementsToList(std::vector<SingleElements>& list, int type)
       list.push_back(element);
    }
 
-   for (std::vector<Node*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
+   for (std::vector<NodeFS*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
    {
       (*it)->AddElementsToList(list, type);
    }
 }
 
-int Node::GetType()
+int NodeFS::GetType()
 {
    if (type_ != -1) return type_;
-   for (std::vector<Node*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
+   for (std::vector<NodeFS*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
    {
       int type_node = (*it)->GetType();
       if (type_node != -1)
@@ -54,7 +55,7 @@ int Node::GetType()
    return 0;
 }
 
-const char* Node::GetElementName(int& index)
+const char* NodeFS::GetElementName(int& index)
 {
    if (type_ != -1)
    {
@@ -65,7 +66,7 @@ const char* Node::GetElementName(int& index)
       index--;
    }
 
-   for (std::vector<Node*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
+   for (std::vector<NodeFS*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
    {
       const char* filename_out = (*it)->GetElementName(index);
       if (filename_out != nullptr)
@@ -76,20 +77,20 @@ const char* Node::GetElementName(int& index)
    return nullptr;
 }
 
-int Node::GetNumberOfElements()
+int NodeFS::GetNumberOfElements()
 {
    int nb_elements = 0;
    if (type_ != -1) nb_elements++;
-   for (std::vector<Node*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
+   for (std::vector<NodeFS*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
    {
       nb_elements += (*it)->GetNumberOfElements();
    }
    return nb_elements;
 }
 
-Node* Node::InsertLeaf(std::string leaf_name, unsigned char* full_buffer)
+NodeFS* NodeFS::InsertLeaf(std::string leaf_name, unsigned char* full_buffer)
 {
-   Node* new_leaf = new Node;
+   NodeFS* new_leaf = new NodeFS;
    new_leaf->full_buffer_ = full_buffer;
    new_leaf->name_ = leaf_name;
    new_leaf->is_leaf_ = true;
@@ -97,16 +98,16 @@ Node* Node::InsertLeaf(std::string leaf_name, unsigned char* full_buffer)
    return new_leaf;
 }
 
-Node* Node::InsertNode(std::string node_name)
+NodeFS* NodeFS::InsertNode(std::string node_name)
 {
    // Look for node : Already exists ?
-   for (std::vector<Node*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
+   for (std::vector<NodeFS*>::iterator it = sub_node_.begin(); it != sub_node_.end(); ++it)
    {
       if ((*it)->name_ == node_name)
          return *it;
    }
    // It does not exists
-   Node* new_node = new Node;
+   NodeFS* new_node = new NodeFS;
    new_node->name_ = node_name;
    new_node->is_leaf_ = false;
    sub_node_.push_back(new_node);
@@ -114,14 +115,14 @@ Node* Node::InsertNode(std::string node_name)
    return new_node;
 }
 
-Node* Node::InsertDir(std::string node_name)
+NodeFS* NodeFS::InsertDir(std::string node_name)
 {
    // Parse the name to get the complete tree
    int pos = node_name.find('/', 0);
    if (pos != std::string::npos)
    {
       // Subdirectory inside :
-      Node* node = InsertNode(node_name.substr(0, pos));
+      NodeFS* node = InsertNode(node_name.substr(0, pos));
       // Add new node (if necessary) then recurse
       return node->InsertDir(node_name.substr(pos + 1));
    }
@@ -134,14 +135,14 @@ Node* Node::InsertDir(std::string node_name)
    return nullptr;
 }
 
-Node* Node::InsertFile(std::string node_name, unsigned char* full_buffer)
+NodeFS* NodeFS::InsertFile(std::string node_name, unsigned char* full_buffer)
 {
    // Parse the name to get the complete tree
    int pos = node_name.find('/', 0);
    if (pos != std::string::npos)
    {
       // Subdirectory inside :
-      Node* node = InsertNode(node_name.substr(0, pos));
+      NodeFS* node = InsertNode(node_name.substr(0, pos));
 
       // Add new node (if necessary) then recurse
       return node->InsertFile(node_name.substr(pos + 1), full_buffer);
@@ -158,7 +159,7 @@ Node* Node::InsertFile(std::string node_name, unsigned char* full_buffer)
    return nullptr;
 }
 
-unsigned char* Node::Extract()
+unsigned char* NodeFS::Extract()
 {
    if (!is_leaf_) return nullptr;
 
@@ -290,7 +291,7 @@ std::vector<SingleElements> ZippedFile::GetInnerElements(int type)
    std::vector<SingleElements> list;
 
    int nb_elements = GetNumberOfElements();
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end(); it++)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end(); it++)
    {
       (*it)->AddElementsToList(list, type);
    }
@@ -301,7 +302,7 @@ std::vector<SingleElements> ZippedFile::GetInnerElements(int type)
 unsigned char* ZippedFile::GetBuffer(int index)
 {
    // Return first buffer of first file found
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end();)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end();)
    {
       // Is it a disk ?
       return (*it)->buffer_;
@@ -311,7 +312,7 @@ unsigned char* ZippedFile::GetBuffer(int index)
 
 int ZippedFile::GetSize(int index)
 {
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end();)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it != zip_file_.sub_node_.end();)
    {
       // Is it a disk ?
       return (*it)->size_;
@@ -325,7 +326,7 @@ int ZippedFile::GetType()
    int ret = 0;
 
    // Return first buffer of first file found
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
    {
       // Is it a disk ?
       int type = (*it)->GetType();
@@ -339,7 +340,7 @@ int ZippedFile::GetType()
 int ZippedFile::GetNumberOfElements()
 {
    int nb_elements = 0;
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
    {
       // Is it a disk ?
       nb_elements += (*it)->GetNumberOfElements();
@@ -350,7 +351,7 @@ int ZippedFile::GetNumberOfElements()
 // Acess to inner datas
 const char* ZippedFile::GetNameOfElement(int index)
 {
-   for (std::vector<Node*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
+   for (std::vector<NodeFS*>::iterator it = zip_file_.sub_node_.begin(); it < zip_file_.sub_node_.end(); it++)
    {
       const char* element_name = (*it)->GetElementName(index);
 
@@ -418,7 +419,7 @@ void ZippedFile::InitUnzip()
                   filename[filename_size] = 0;
 
                   // Directory ?
-                  Node* added_element;
+                  NodeFS* added_element;
                   if (efile_attrib == FILE_ATTRIBUTE_DIRECTORY)
                   {
                      // New node :
@@ -669,7 +670,7 @@ int DataContainer::InitUnzip(ITypeManager* manager, unsigned char* zipped_buffer
             filename[filename_size] = 0;
 
             // Directory ?
-            Node* added_element;
+            NodeFS* added_element;
             if (efile_attrib == FILE_ATTRIBUTE_DIRECTORY)
             {
                // New node :

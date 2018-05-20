@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 ///////////////////////////////////////////////////
 // Generic function : Easier to port to various OS
