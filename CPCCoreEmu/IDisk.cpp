@@ -2839,3 +2839,13 @@ void IDisk::FillTrack(unsigned char* track_buffer, const unsigned char cylinder,
       track_buffer[load_disk_index] = BIT_WEAK;
    }
 }
+
+void IDisk::CombineWithDisk(IDisk* other_disk)
+{
+   CleanSide(1);
+
+   nb_sides_ = 2;
+   side_[1] = other_disk->side_[0];
+   other_disk->side_[0].nb_tracks = 0;
+   other_disk->side_[0].tracks = nullptr;
+}

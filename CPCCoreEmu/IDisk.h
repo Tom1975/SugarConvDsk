@@ -69,6 +69,8 @@ public:
 
    virtual int GetCurrentLoadProgress() { return load_progress_; }
 
+   virtual void CombineWithDisk(IDisk* other_disk);
+
    virtual void CleanSide(int side);
    virtual void CleanDisk();
    void SetFixedSpeed(bool fixed_speed) { fixed_speed_ = fixed_speed; };
