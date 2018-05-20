@@ -13,7 +13,8 @@
 
 // Windows Header Files:
 #ifdef _WIN32
-
+// Big endian on windows.
+#define BIG_ENDIAN
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_NONSTDC_NO_DEPRECATE
 #define _CRTDBG_MAP_ALLOC
