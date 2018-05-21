@@ -6,7 +6,7 @@
 #pragma once
 
 
-// Definition of endianess.
+// Definition of endianess. (gcc compliant)
 #ifdef __BIG_ENDIAN__
 #define BIG_ENDIAN
 #endif

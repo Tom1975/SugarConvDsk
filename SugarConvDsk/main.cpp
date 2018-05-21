@@ -183,8 +183,10 @@ out:
 #else
 
 #include "stdafx.h"
+#include "DiskGen.h"
 #include "DiskBuilder.h"
 #include "FileAccess.h"
+
 
 #ifdef __unix
 #define stricmp strcasecmp
@@ -194,6 +196,7 @@ out:
 #include <string.h>
 
 static DiskBuilder disk_builder;
+DiskGen disk_gen;
 std::vector<FormatType*> out_format_list;
 std::vector<FormatType*> in_format_list;
 
