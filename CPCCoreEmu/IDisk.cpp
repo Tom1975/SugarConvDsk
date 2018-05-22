@@ -292,11 +292,14 @@ void IDisk::ChangeTrack(int side, int newTrack)
 
 void IDisk::CleanSide(int side)
 {
-   for (unsigned int track = 0; track < side_[side].nb_tracks; track++)
-   {
-      delete[]side_[side].tracks[track].bitfield;
-   }
-   delete []side_[side].tracks;
+	if (side < nb_sides_)
+	{
+		for (unsigned int track = 0; track < side_[side].nb_tracks; track++)
+		{
+			delete[]side_[side].tracks[track].bitfield;
+		}
+		delete[]side_[side].tracks;
+	}
 }
 
 void IDisk::CleanDisk()
