@@ -13,10 +13,11 @@
 #include <string>
 #include <algorithm>
 
-#include "tchar.h"
-#include "windows.h"
 #include "gtest/gtest.h"
 
+#include "DiskBuilder.h"
+#include "IDisk.h"
+#include "FileAccess.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -24,6 +25,8 @@ const std::string out_dir = "out";
 const std::string expected_dir = "Expected";
 const std::string dump_dir = "Ressources//Dumps";
 
+/////////////////////////////////////////////////////////////
+// Helper functions
 bool CompareFiles(const std::string& p1, const std::string& p2) {
 	std::ifstream f1(p1, std::ifstream::binary | std::ifstream::ate);
 	std::ifstream f2(p2, std::ifstream::binary | std::ifstream::ate);
@@ -44,6 +47,48 @@ bool CompareFiles(const std::string& p1, const std::string& p2) {
 		std::istreambuf_iterator<char>(f2.rdbuf()));
 }
 
+bool CompareConversion (const char* in_file, const char* out_file, const char* conversion_options, std::string& error_string)
+{
+	fs::remove( fs::path(out_file));
+	std::stringstream str;
+	str << "SugarConvDsk \"" << in_file << "\" "<< conversion_options << " \"" << out_file << "\"";
+	
+	if (system(str.str().c_str()) != 0)
+	{
+		error_string = "SugarConvDsk return an error";
+		return false;
+	}
+
+	// Check generated file
+	DiskBuilder disk_builder;
+	IDisk * d1, *d2;
+	FormatType *type;
+
+	if (!disk_builder.CanLoad(in_file, type))
+	{
+		error_string = "Cannot load input file";
+		return false;
+	}
+
+	if (disk_builder.LoadDisk(in_file, d1) != 0)
+	{
+		error_string = "Error while loading input file";
+		return false;
+	}
+	if (disk_builder.LoadDisk(out_file, d2) != 0)
+	{
+		error_string = "Error while loading output file";
+		return false;
+	}
+	if (d1->CompareToDisk(d2, false) != 0)
+	{
+		error_string = "Input and Output are not equivalent";
+		return false;
+	}
+	delete d1;
+	delete d2;
+	return true;
+}
 
 /////////////////////////////////////////////////////////////
 // Check that SugarConvDsk without any parameter display the usage text
@@ -57,18 +102,72 @@ TEST(SugarConvDsk, Display_Help)
 
 	std::stringstream str;
 	str << "SugarConvDsk >> " << out_path.string();
-
 	system( str.str().c_str());
 
 	ASSERT_EQ(true, CompareFiles(out_path.string(), expected_path.string())) << "Usage is not what's expected !";
 }
 
 /////////////////////////////////////////////////////////////
-// Check conversion : Dsk to IPF
-TEST(SugarConvDsk, Dsk_IPF)
+// Check conversion : Whole to IPF
+TEST(SugarConvDsk, Conversion_2IPF)
 {
-	const fs::path in_file = fs::path(dump_dir)/ "After Burner (UK) (1988) (UK retail version) (CPM) [Original] (Weak Sectors).dsk";
+	bool test_ok = true;
+	std::vector<std::string> file_list;
+	std::stringstream str;
+	std::string error_string;
 
+	DiskBuilder disk_builder;
+	std::vector<FormatType*> list_formats = disk_builder.GetFormatsList(DiskBuilder::WRITE);
 
+	GetDirectoryContent(dump_dir.c_str(), file_list);
+	
+	const char* ext = "IPF";
+	for (auto&it : file_list)
+	{
+		const std::string filename_to_test = fs::path(it).filename().string();
+		const std::string out_filename = filename_to_test + "." + ext;
+
+		const fs::path in_file = fs::path(dump_dir) / filename_to_test;
+		const fs::path out_file = fs::path(out_dir) / out_filename;
+
+		std::string options = std::string("-o=") + ext;
+
+		if (!CompareConversion(in_file.string().c_str(), out_file.string().c_str(), options.c_str(), error_string))
+		{
+			test_ok = false;
+			str << "Error : " << in_file.string() << " -> "<< ext <<" : "<< error_string << "\n";
+		}
+	}
+	ASSERT_TRUE(test_ok) << str.str();
 }
+
+TEST(SugarConvDsk, DSK_HFE)
+{
+	const std::string filename_to_test = "Arkanoid - Revenge of Doh (1988)(Imagine).dsk";
+	const fs::path in_file = fs::path(dump_dir) / filename_to_test;
+	std::string out_file = filename_to_test + ".HFE";
+	const fs::path out_path = fs::path(out_dir) / out_file;
+	
+	std::string error_string;
+	if (!CompareConversion(in_file.string().c_str(), out_path.string().c_str(), "-o=HFE", error_string))
+	{
+		FAIL() << error_string;
+	}
+}
+
+// Check conversion : EDsk to HFE
+TEST(SugarConvDsk, EDsk_HFE)
+{
+	const std::string filename_to_test = "Barbarian (1987)(Palace Software)(Disk 1 of 2)[a].dsk";
+	const fs::path in_file = fs::path(dump_dir) / filename_to_test;
+	std::string out_file = filename_to_test + ".HFE";
+	const fs::path out_path = fs::path(out_dir) / out_file;
+
+	std::string error_string;
+	if (!CompareConversion(in_file.string().c_str(), out_path.string().c_str(), "-o=HFE", error_string))
+	{
+		FAIL() << error_string;
+	}
+}
+
 
