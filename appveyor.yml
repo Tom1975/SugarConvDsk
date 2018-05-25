@@ -32,7 +32,7 @@ build:
   parallel: true
   
 test_script:
-  - '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\Tests.exe'
+  - '%APPVEYOR_BUILD_FOLDER%\Tests\%CONFIGURATION%\Tests.exe'
   
 only_commits:
   files:
