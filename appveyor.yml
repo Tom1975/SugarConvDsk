@@ -30,9 +30,11 @@ build:
   project: c:\projects\cmake-init\build\SugarConvDsk.sln
   verbosity: minimal
   parallel: true
-  
+
 test_script:
-  - %APPVEYOR_BUILD_FOLDER%\Tests\%CONFIGURATION%\Tests.exe
+- cmd:  |-
+    cd c:\projects\cmake-init\build\Tests\%CONFIGURATION%
+    Tests.exe
   
 only_commits:
   files:
