@@ -27,12 +27,13 @@ before_build:
     cmake .. -G "Visual Studio 15 2017"
     
 build_script:
-- cmake --build .
-- cmake --build . --target INSTALL
+- cmake --build . --config %configuration%
+- cmake --build . --config %configuration% --target INSTALL
 
 test_script:
 - cmd:  |-
-    cd c:\projects\cmake-init\build\Tests\Debug
+    cd c:\projects\cmake-init\build\Tests
+    cd %configuration%
     Tests.exe
   
 only_commits:
