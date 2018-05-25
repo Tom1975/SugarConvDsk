@@ -26,13 +26,15 @@ before_build:
     cmake --version
     cmake .. -G "Visual Studio 15 2017"
     
-build:
-  project: c:\projects\cmake-init\build\SugarConvDsk.sln
-  verbosity: minimal
-  parallel: true
-  
+build_script:
+- cmake --build . --config %configuration%
+- cmake --build . --config %configuration% --target INSTALL
+
 test_script:
-  - %APPVEYOR_BUILD_FOLDER%\Tests\%CONFIGURATION%\Tests.exe
+- cmd:  |-
+    cd c:\projects\cmake-init\build\Tests
+    cd %configuration%
+    Tests.exe
   
 only_commits:
   files:
