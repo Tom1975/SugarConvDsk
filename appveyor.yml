@@ -27,7 +27,10 @@ before_build:
     cmake .. -G "Visual Studio 15 2017"
     
 build_script:
-- cmd: cmake --build
+- cmd:|-
+    cd  build
+    cmake --build .
+    cmake --build . --target INSTALL
 
 test_script:
 - cmd:  |-
