@@ -32,7 +32,7 @@ build_script:
 
 test_script:
 - cmd:  |-
-    cd c:\projects\cmake-init\build\Tests\%CONFIGURATION%
+    cd c:\projects\cmake-init\build\Tests\Release
     Tests.exe
   
 only_commits:
