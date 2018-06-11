@@ -8,11 +8,13 @@ Convert any Amstrad CPC dump file format to other format
 
 Usage
 =====
-Usage : SugarConvDsk source [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]
+Usage : SugarConvDsk source [destination] [-s=side] [-second=path][-o=outputformat] [-r] [-f=filter]
 
     -s=side : Select side of the disk to convert.
        Side can be 1 or 2
        If omitted, both side are written (if relevant for the format)
+    
+    -second=path : the 2nd side is replaced by the dump source specified in 'path'
 
     -o=outputformat : Select output format. Can take the following values:
         EDSK : Extended Dsk format
