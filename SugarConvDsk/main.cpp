@@ -204,8 +204,9 @@ bool sub_dir = false;
 FormatType* out_support;
 IDisk::FaceSelection face_to_convert = IDisk::FACE_BOTH;
 char filter[MAX_PATH] = {0};
+char * second_side;
 
-int ConversionFile(fs::path& source, fs::path& destination)
+int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side)
 {
    DiskBuilder disk_builder;
    int return_value = 0;
@@ -222,17 +223,17 @@ int ConversionFile(fs::path& source, fs::path& destination)
    printf("Loading %s", source.generic_string().c_str());
 
    FormatType* format;
-   if (!disk_builder.CanLoad(source.generic_string().c_str(), format) )
+   if (!disk_builder.CanLoad(source.string().c_str(), format) )
    {
       printf(" !! Error loading disk : Format unknown !!\n");
       return -1;
    }
 
-   // Load the disk
-   if (disk_gen.LoadDisk(source.generic_string().c_str() /*pSrc */) != 0)
+   // Load the disk - todo : add progression 
+   IDisk* new_disk = nullptr;
+   if (disk_builder.LoadDisk(source.string().c_str(), new_disk, nullptr) != 0)
    {
       printf(" !! Error loading disk !!\n");
-
       return -1;
    }
    else
@@ -240,14 +241,36 @@ int ConversionFile(fs::path& source, fs::path& destination)
       printf(" ok - ");
    }
 
-   // raw ?
+   // Second side foring ?
+   IDisk* new_disk_side_2 = nullptr;
+   if (use_second_side && strlen(second_side) > 0)
+   {
+      if (!disk_builder.CanLoad(second_side, format))
+      {
+         printf(" !! Error loading disk 2 : Format unknown !!\n");
+         return -1;
+      }
 
+      // Load the disk - todo : add progression 
+      if (disk_builder.LoadDisk(second_side, new_disk_side_2, nullptr) != 0)
+      {
+         printf(" !! Error loading disk 2 !!\n");
+         return -1;
+      }
+      else
+      {
+         printf(" ok - ");
+      }
+   }
+
+   // raw ?
    if (strcmp(format->GetFormatName(), "KRYOFLUX") == 0)
    {
       return_value = 1;
    }
+
    // Filter side
-   IDisk::FaceSelection pSide = disk_gen.FilterSide(face_to_convert);
+   IDisk::FaceSelection pSide = new_disk->FilterSide(face_to_convert);
    switch (pSide)
    {
    case IDisk::FaceSelection::FACE_1: printf("Side 0 is kept - ");
@@ -261,9 +284,18 @@ int ConversionFile(fs::path& source, fs::path& destination)
       return -1;
    }
 
+   // Combine the 2 dumps, if necessary
+   if (new_disk_side_2 != nullptr)
+   {
+      // Combine both disk      
+      new_disk->CombineWithDisk(new_disk_side_2);
+      delete new_disk_side_2;
+   }
+
+
    // Save with the correct format
-   out_support->SaveDisk(destination.generic_string().c_str(), disk_gen.GetDisk());
-   printf("Saving %s \n", disk_gen.GetCurrentLoadedDisk());
+   out_support->SaveDisk(destination.generic_string().c_str(), new_disk);
+   printf("Saving %s \n", new_disk->GetCurrentLoadedDisk());
 
    return return_value;
 }
@@ -285,7 +317,7 @@ int ConversionDirectory(fs::path& source, fs::path& destination)
             output_file.replace_filename(p.path().filename());
             output_file.replace_extension("");
 
-            if (ConversionFile(input_file, output_file) == 1)
+            if (ConversionFile(input_file, output_file, false) == 1)
             {
                //End of this directory
                return 0;
@@ -305,7 +337,7 @@ int ConversionDirectory(fs::path& source, fs::path& destination)
 
             ConversionDirectory(input_file, destination);
 
-            if (ConversionFile(input_file, destination) == 1)
+            if (ConversionFile(input_file, destination, false) == 1)
             {
                //End of this directory
                return 0;
@@ -320,7 +352,7 @@ int ConversionDirectory(fs::path& source, fs::path& destination)
 
 void PrintUsage()
 {
-   printf("Usage : SugarConvDsk source [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]\n");
+   printf("Usage : SugarConvDsk source [-second=side_2_path] [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]\n");
    printf("\n");
    printf("    -s=side : Select side of the disk to convert.\n");
    printf("       Side can be 1 or 2\n");
@@ -335,6 +367,7 @@ void PrintUsage()
 
    printf("    If this parameter is not used, default output format is IPF\n");
    printf("\n");
+   printf("   -second=side_2_path : If source is a single dump, side 1 of side_2_path will be the 2nd side of the output (it will replace any side of the regular output)\n");
    printf("    source : The source file can be in the following format : \n");
 
    for (auto it = in_format_list.begin(); it != in_format_list.end(); ++it)
@@ -388,6 +421,12 @@ int main(int argc, char** argv)
          {
             sscanf(argv[i], "-f=%s", filter);
          }
+         else if (strnicmp(argv[i], "-second=", 8) == 0)
+         {
+            second_side = argv[i] + strlen("-second=");
+            //sscanf(argv[i], "-second=%s", second_side);
+         }
+         
             // Chek outsupport with supported formats
          else if (strlen(argv[i]) > 3 && argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '=')
          {
@@ -461,7 +500,7 @@ int main(int argc, char** argv)
 
    if (fs::is_regular_file(fs::status(source)))
    {
-      return ConversionFile(source_path, destination_path);
+      return ConversionFile(source_path, destination_path, true);
    }
    else if (fs::is_directory(fs::status(source)))
    {

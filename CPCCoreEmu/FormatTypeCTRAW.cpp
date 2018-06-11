@@ -78,6 +78,7 @@ int FormatTypeCTRAW::LoadDisk(const unsigned char* buffer, size_t size, IDisk*& 
       else
       {
          delete created_disk;
+         created_disk = nullptr;
          return FILE_ERROR;
       }
    }
