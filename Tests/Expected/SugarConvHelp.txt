@@ -1,4 +1,4 @@
-Usage : SugarConvDsk source [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]
+Usage : SugarConvDsk source [-second=side_2_path] [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]
 
     -s=side : Select side of the disk to convert.
        Side can be 1 or 2
@@ -11,6 +11,7 @@ Usage : SugarConvDsk source [destination] [-s=side] [-o=outputformat] [-r] [-f=f
         SCP : Supercard Pro format
     If this parameter is not used, default output format is IPF
 
+   -second=side_2_path : If source is a single dump, side 1 of side_2_path will be the 2nd side of the output (it will replace any side of the regular output)
     source : The source file can be in the following format : 
         CTRAW : CT-RAW format
         DSK : Dsk format
