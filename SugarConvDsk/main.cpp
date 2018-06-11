@@ -204,7 +204,7 @@ bool sub_dir = false;
 FormatType* out_support;
 IDisk::FaceSelection face_to_convert = IDisk::FACE_BOTH;
 char filter[MAX_PATH] = {0};
-char * second_side;
+char * second_side = nullptr;
 
 int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side)
 {
@@ -500,7 +500,7 @@ int main(int argc, char** argv)
 
    if (fs::is_regular_file(fs::status(source)))
    {
-      return ConversionFile(source_path, destination_path, true);
+      return ConversionFile(source_path, destination_path, (second_side!=nullptr));
    }
    else if (fs::is_directory(fs::status(source)))
    {
