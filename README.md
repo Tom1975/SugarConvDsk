@@ -42,6 +42,10 @@ Usage : SugarConvDsk source [destination] [-s=side] [-second=path][-o=outputform
 	Example : SugarConvDsk d:\dump d:\result -o=IPF -r -f=[CPC]*.dsk 
 	This will convert to IPF every file of the form "[CPC]*.dsk", from directory d:\result, and subdirectories.
 	Result files will be saved in the d:\result directory.
+	
+    -cat=user : This option will print the disk content, based on the USER specified. If ALLUSERS is used, all users will be displayed.
+    	If used, this option will prevent a convertion.
+    
 
 This tool mainly convert any format into an internal format, then write it back to the specified one.
 Internal format is bases on MFM, with some specific attributes for every bit, which can be weak or optional.
