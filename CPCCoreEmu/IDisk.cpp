@@ -2871,7 +2871,7 @@ bool ValidName(std::string str)
 
 
 //DiskGen::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
-std::vector<std::string>  IDisk::GetCAT()
+std::vector<std::string>  IDisk::GetCAT(int user)
 {
    std::vector<std::string> filename_vector;
 
@@ -2983,7 +2983,7 @@ std::vector<std::string>  IDisk::GetCAT()
 
    while (offset < total_size && !end)
    {
-      if (track_data[offset - 1] == 0)
+      if (user == -1 || track_data[offset - 1] == user)
       {
          // Add to the name vector
          std::string str = (const char*)(&track_data[offset]);

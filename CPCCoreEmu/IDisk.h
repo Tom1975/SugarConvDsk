@@ -97,7 +97,7 @@ public:
 
    bool IsDiskModified() const { return disk_modified_; };
 
-   std::vector<std::string>  GetCAT();
+   std::vector<std::string>  GetCAT(int user=0);
 
    ///////////////////////////////////////////////////////////////
    // Usefull generic fonctions

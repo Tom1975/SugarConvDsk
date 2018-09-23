@@ -205,7 +205,6 @@ FormatType* out_support;
 IDisk::FaceSelection face_to_convert = IDisk::FACE_BOTH;
 char filter[MAX_PATH] = {0};
 char * second_side = nullptr;
-bool cat = false;
 
 int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side)
 {
@@ -383,7 +382,7 @@ void PrintUsage()
    printf("\n");
    printf("    -r : If the source file is a directory, convert recursively the given directory.\n");
    printf("    -f=filter : If the source file is a directory, set a filter for the files to convert.\n");
-   printf("    -cat : List the directory to standard output (no conversion is done if used).\n");
+   printf("    -cat=user : List the directory to standard output (no conversion is done if used). 'user' is used, unless ALLUSER is specified\n");
 }
 
 
@@ -400,6 +399,10 @@ int main(int argc, char** argv)
 
    char* source = nullptr;
    const char* destination = nullptr;
+
+   // CATALOG
+   bool cat = false;
+   int user = 0;  // default user
 
 
    for (int i = 1; i < argc && arguments_are_ok; i++)
@@ -428,10 +431,21 @@ int main(int argc, char** argv)
             second_side = argv[i] + strlen("-second=");
             //sscanf(argv[i], "-second=%s", second_side);
          }
-         else if (strnicmp(argv[i], "-cat", 8) == 0)
+         else if (strnicmp(argv[i], "-cat=", 5) == 0)
          {
             // cat
             cat = true;
+            // Get user : 
+            char user_str[256];
+            sscanf(argv[i], "-cat=%s", user_str);
+            // all user ?
+            if (strcmp(user_str, "ALLUSERS")==0)
+               user = -1;
+            else
+            {
+               char* end_str;
+               user = strtol(user_str, &end_str, 16);
+            }
          }
 
             // Chek outsupport with supported formats
@@ -494,7 +508,16 @@ int main(int argc, char** argv)
          return -1;
       }
 
-      std::vector<std::string> file_list = new_disk->GetCAT();
+      std::vector<std::string> file_list = new_disk->GetCAT(user);
+      if (user == -1)
+      {
+         printf("Catalog for all users \n");
+      }
+      else
+      {
+         printf("Catalog for user : %X\n", user);
+      }
+      
       for (auto&i : file_list)
       {
          bool hidden = (i[9] & 0x80) == 0x80;
