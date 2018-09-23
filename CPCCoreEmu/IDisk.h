@@ -97,6 +97,8 @@ public:
 
    bool IsDiskModified() const { return disk_modified_; };
 
+   std::vector<std::string>  GetCAT();
+
    ///////////////////////////////////////////////////////////////
    // Usefull generic fonctions
    static void FillTrack(unsigned char* track, const unsigned char cylinder, IDisk::DiskType type,

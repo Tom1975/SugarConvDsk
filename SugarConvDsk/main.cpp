@@ -205,6 +205,7 @@ FormatType* out_support;
 IDisk::FaceSelection face_to_convert = IDisk::FACE_BOTH;
 char filter[MAX_PATH] = {0};
 char * second_side = nullptr;
+bool cat = false;
 
 int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side)
 {
@@ -382,6 +383,7 @@ void PrintUsage()
    printf("\n");
    printf("    -r : If the source file is a directory, convert recursively the given directory.\n");
    printf("    -f=filter : If the source file is a directory, set a filter for the files to convert.\n");
+   printf("    -cat : List the directory to standard output (no conversion is done if used).\n");
 }
 
 
@@ -426,7 +428,12 @@ int main(int argc, char** argv)
             second_side = argv[i] + strlen("-second=");
             //sscanf(argv[i], "-second=%s", second_side);
          }
-         
+         else if (strnicmp(argv[i], "-cat", 8) == 0)
+         {
+            // cat
+            cat = true;
+         }
+
             // Chek outsupport with supported formats
          else if (strlen(argv[i]) > 3 && argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '=')
          {
@@ -476,35 +483,61 @@ int main(int argc, char** argv)
       return -1;
    }
 
-   if (out_support == nullptr)
+   // Specific : 'cat' support
+   if (cat)
    {
-      if (!out_format_list.empty())
+      // Print catalog to stdout
+      IDisk* new_disk = nullptr;
+      if (disk_builder.LoadDisk(source, new_disk, nullptr) != 0)
       {
-         // take first one !
-         out_support = out_format_list.at(0);
-      }
-      else
-      {
-         printf("*** ERROR : No output format available !\n");
+         printf(" !! Error loading disk !!\n");
          return -1;
       }
-   }
 
-   if (destination == nullptr)
-   {
-      destination = "";
-   }
+      std::vector<std::string> file_list = new_disk->GetCAT();
+      for (auto&i : file_list)
+      {
+         bool hidden = (i[9] & 0x80) == 0x80;
+         bool readonly = (i[8] & 0x80) == 0x80;
+         i[8] &= 0x7F;
+         i[9] &= 0x7F;
+         printf("%s   %c   %c\n", i.c_str(), hidden?'H':' ', readonly?'R':' ');
+      }
 
-   fs::path source_path(source);
-   fs::path destination_path(destination);
-
-   if (fs::is_regular_file(fs::status(source)))
-   {
-      return ConversionFile(source_path, destination_path, (second_side!=nullptr));
+      return 0;
    }
-   else if (fs::is_directory(fs::status(source)))
+   else
    {
-      return ConversionDirectory(source_path, destination_path);
+      if (out_support == nullptr)
+      {
+         if (!out_format_list.empty())
+         {
+            // take first one !
+            out_support = out_format_list.at(0);
+         }
+         else
+         {
+            printf("*** ERROR : No output format available !\n");
+            return -1;
+         }
+      }
+
+      if (destination == nullptr)
+      {
+         destination = "";
+      }
+
+      fs::path source_path(source);
+      fs::path destination_path(destination);
+
+      if (fs::is_regular_file(fs::status(source)))
+      {
+         return ConversionFile(source_path, destination_path, (second_side != nullptr));
+      }
+      else if (fs::is_directory(fs::status(source)))
+      {
+         return ConversionDirectory(source_path, destination_path);
+      }
    }
 }
 

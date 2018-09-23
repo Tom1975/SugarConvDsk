@@ -2852,3 +2852,149 @@ void IDisk::CombineWithDisk(IDisk* other_disk)
    other_disk->side_[0].nb_tracks = 0;
    other_disk->side_[0].tracks = nullptr;
 }
+
+
+bool ValidName(std::string str)
+{
+   if (str.length() == 0) return false;
+
+   bool valid = true;
+   // no not displayable or lower case character
+   if (str.length() >= 9) str[8] &= 0x7F;
+   if (str.length() >= 10) str[9] &= 0x7F;
+   for (unsigned int i = 0; i < str.length() && valid; i++)
+   {
+      if (str[i] > 0x60 || str[i] < 0x20) valid = false;
+   }
+   return valid;
+}
+
+
+//DiskGen::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
+std::vector<std::string>  IDisk::GetCAT()
+{
+   std::vector<std::string> filename_vector;
+
+   // Get info
+   IDisk::Track track_info;
+   GetTrackInfo(0, 0, &track_info);
+
+   if (track_info.list_sector_.size() == 0)
+   {
+      return filename_vector;
+   }
+
+   // CPM ?
+   int index_cat = 0;
+   unsigned char first_sector = 00;
+   // A |CPM can be run if a"0x41" sector is found
+   for (auto it = track_info.list_sector_.begin(); it != track_info.list_sector_.end(); ++it)
+   {
+      if (it->r == 0x41)
+      {
+         index_cat = 2;
+      }
+   }
+
+   // SYSTEM / VENDOR
+   if ((track_info.list_sector_.at(0).r & 0xC0) == 0x40)
+   {
+      first_sector = 0x41;
+   }
+   // DATA
+   else if ((track_info.list_sector_.at(0).r & 0xC0) == 0xC0)
+   {
+      index_cat = 0;
+      first_sector = 0xC1;
+   }
+   // IBM
+   else if ((track_info.list_sector_.at(0).r & 0xC0) == 0x00
+      || (track_info.list_sector_.at(0).r & 0xC0) == 0x80)
+   {
+      index_cat = 1;
+      first_sector = 0x01;
+   }
+
+   if (index_cat != 0)
+   {
+      track_info.list_sector_.clear();
+      GetTrackInfo(0, index_cat, &track_info);
+   }
+
+#define NB_SECTOR_FOR_CAT 4
+
+   int total_size = NB_SECTOR_FOR_CAT * 512;
+   /*for (int i = 0; i < NB_SECTOR_FOR_CAT && i < trackInfo.listSector.size(); i++)
+   {
+      totalSize += trackInfo.listSector.at(i).RealSize;
+   }*/
+
+   // No, try to fins appropriate file to run
+   unsigned char* track_data = new unsigned char[total_size];
+   memset(track_data, 0, total_size);
+   int offset_data = 0;
+
+
+   // It's in first track, NB_SECTOR_FOR_CAT firsts sectors, from first_sector to first_sector + NB_SECTOR_FOR_CAT
+   // todo : read the proper sectors !
+   int nb_sector_read = 0;
+
+   //for (int i = 0; i < NB_SECTOR_FOR_CAT && i < trackInfo.listSector.size(); i++)
+   unsigned int index_sector = 0;
+   int nb_read_sector = 0;
+   while (index_sector < track_info.list_sector_.size() && nb_read_sector < NB_SECTOR_FOR_CAT && offset_data < total_size)
+   {
+      // Read first xx sectors
+      if (track_info.list_sector_.at(index_sector).r >= first_sector)
+      {
+         if (track_info.list_sector_.at(index_sector).r - first_sector < NB_SECTOR_FOR_CAT)
+         {
+            int index = track_info.list_sector_.at(index_sector).dam_offset + 64;
+
+            offset_data = (track_info.list_sector_.at(index_sector).r - first_sector) * 512;
+            nb_read_sector++;
+            for (int cpt = 0; cpt < track_info.list_sector_.at(index_sector).real_size && offset_data < total_size; cpt++)
+            {
+               // Walk all of them - remove the 0x80 bits
+               unsigned char b = GetNextByte(0, index_cat, index);
+               track_data[offset_data++] = b;
+               index += 16;
+            }
+         }
+      }
+      index_sector++;
+   }
+
+   // Dump TrackData
+   int line_count = 0;
+   for (int hex = 0; hex < offset_data; hex++)
+   {
+      LOGB(track_data[hex]);
+      LOG(" ");
+      if (++line_count == 16)
+      {
+         LOGEOL
+            line_count = 0;
+      }
+   }
+
+   int offset = 1;
+   bool end = false;
+
+   while (offset < total_size && !end)
+   {
+      if (track_data[offset - 1] == 0)
+      {
+         // Add to the name vector
+         std::string str = (const char*)(&track_data[offset]);
+         if (ValidName(str))
+         {
+            filename_vector.push_back(str);
+         }
+      }
+      offset += 32;
+   }
+   delete[]track_data;
+
+   return filename_vector;
+}
