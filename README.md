@@ -9,6 +9,9 @@ Convert any Amstrad CPC dump file format to other format
 Usage
 =====
 Usage : SugarConvDsk source [destination] [-s=side] [-second=path][-o=outputformat] [-r] [-f=filter]
+    or  SugarConvDsk -cat=user [-sort] [-sort] source 
+
+	If -cat option is not used, SugarConvDsk will perform a format conversion.
 
     -s=side : Select side of the disk to convert.
        Side can be 1 or 2
@@ -43,8 +46,15 @@ Usage : SugarConvDsk source [destination] [-s=side] [-second=path][-o=outputform
 	This will convert to IPF every file of the form "[CPC]*.dsk", from directory d:\result, and subdirectories.
 	Result files will be saved in the d:\result directory.
 	
+
+	If -cat option is used, SugarConvDsk will display the content of the diskn, and will not do a convertion.
+	In this case, destination and conversion flags are ignored.
+
     -cat=user : This option will print the disk content, based on the USER specified. If ALLUSERS is used, all users will be displayed.
     	If used, this option will prevent a convertion.
+	-sort : This flag will wort the files in alphabetical order.
+	-l : Add flags H for hidden files, and R for read-only files. List isdisplayed with one file per line.
+	-c : Display file on the same line, separated with semicolumn
     
 
 This tool mainly convert any format into an internal format, then write it back to the specified one.
