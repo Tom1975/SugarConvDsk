@@ -45,10 +45,10 @@ only_commits:
 
 deploy:
     release: SugarConvDsk-v$(APPVEYOR_REPO_TAG_NAME)
-    name : Win32 EXE file
+    description: 'SugarConvDsk'
     provider : GitHub
     artifacts: 
-      - path: /build/SugarConvDsk/Release/SugarConvDsk.exe
+      - path: build \SugarConvDsk\Release\SugarConvDsk.exe
         name: SugarConvDsk
     auth_token:
         secure: BnoqaLTSDVNx6oPt3nKlP69GTVZpfVUDPnHSweLsR34ZIeIi4pvUIE+Uz3iebEhz
