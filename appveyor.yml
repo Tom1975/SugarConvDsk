@@ -45,6 +45,10 @@ only_commits:
     - SugarConvDsk/
     - CPCCoreEMu/
 
+artifacts:
+    - path: c:\projects\cmake-init\build\SugarConvDsk\Release\SugarConvDsk.exe
+	  name: SugarConvDsk
+
 deploy:
     release: SugarConvDsk-v$(APPVEYOR_REPO_TAG_NAME)
     description: 'SugarConvDsk tool for converting and listing Amstrad CPC disk dumps'
