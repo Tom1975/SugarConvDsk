@@ -48,7 +48,7 @@ deploy:
     name : Win32 EXE file
     provider : GitHub
     artifacts: 
-      - path: C:/projects/cmake-init/build/Tests/Release/SugarConvDsk.exe
+      - path: /build/SugarConvDsk/Release/SugarConvDsk.exe
         name: SugarConvDsk
     auth_token:
         secure: BnoqaLTSDVNx6oPt3nKlP69GTVZpfVUDPnHSweLsR34ZIeIi4pvUIE+Uz3iebEhz
