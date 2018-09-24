@@ -42,3 +42,13 @@ only_commits:
     - appveyor.yml
     - SugarConvDsk/
     - CPCCoreEMu/
+
+deploy:
+    release: SugarConvDsk-v$(appveyor_build_version)
+    provider : GitHub
+    artifacts: C:/projects/cmake-init/build/Tests/Release/SugarConvDsk.exe
+    auth_token:
+        secure: BnoqaLTSDVNx6oPt3nKlP69GTVZpfVUDPnHSweLsR34ZIeIi4pvUIE+Uz3iebEhz
+    on:
+        branch : master
+        appveyor_repo_tag: true
