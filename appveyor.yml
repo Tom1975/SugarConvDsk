@@ -44,7 +44,7 @@ only_commits:
     - CPCCoreEMu/
 
 deploy:
-    release: $(APPVEYOR_REPO_TAG_NAME)
+    release: SugarConvDsk-v$(APPVEYOR_REPO_TAG_NAME)
 	name : Win32 EXE file
     provider : GitHub
     artifacts: 
