@@ -45,9 +45,9 @@ only_commits:
 
 deploy:
     release: SugarConvDsk-v$(APPVEYOR_REPO_TAG_NAME)
-    description: 'SugarConvDsk'
+    description: 'SugarConvDsk tool for converting and listing Amstrad CPC disk dumps'
     provider : GitHub
-    artifacts: build \SugarConvDsk\Release\SugarConvDsk.exe
+    artifacts: **\SugarConvDsk.exe
     auth_token:
         secure: BnoqaLTSDVNx6oPt3nKlP69GTVZpfVUDPnHSweLsR34ZIeIi4pvUIE+Uz3iebEhz
     on:
