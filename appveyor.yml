@@ -42,3 +42,8 @@ only_commits:
     - appveyor.yml
     - SugarConvDsk/
     - CPCCoreEMu/
+
+artifacts:
+  - path:  C:/projects/cmake-init/build/Tests/Release/SugarConvDsk.exe
+    name: File
+
