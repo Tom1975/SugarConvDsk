@@ -45,6 +45,7 @@ only_commits:
 
 deploy:
     release: SugarConvDsk-v$(appveyor_build_version)
+	name : Win32 EXE file
     provider : GitHub
     artifacts: C:/projects/cmake-init/build/Tests/Release/SugarConvDsk.exe
     auth_token:
