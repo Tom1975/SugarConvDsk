@@ -194,6 +194,7 @@ out:
 #endif // __unix
 
 #include <string.h>
+#include <algorithm>
 
 static DiskBuilder disk_builder;
 DiskGen disk_gen;
@@ -383,6 +384,9 @@ void PrintUsage()
    printf("    -r : If the source file is a directory, convert recursively the given directory.\n");
    printf("    -f=filter : If the source file is a directory, set a filter for the files to convert.\n");
    printf("    -cat=user : List the directory to standard output (no conversion is done if used). 'user' is used, unless ALLUSER is specified\n");
+   printf("    -sort : This flag will wort the files in alphabetical order.\n");
+   printf("    - l : Add flags H for hidden files, and R for read - only files.List isdisplayed with one file per line.\n");
+   printf("    - c : Display file on the same line, separated with semicolumn\n");
 }
 
 
@@ -403,7 +407,9 @@ int main(int argc, char** argv)
    // CATALOG
    bool cat = false;
    int user = 0;  // default user
-
+   bool sort = false;
+   bool full_list = false;
+   bool compact;
 
    for (int i = 1; i < argc && arguments_are_ok; i++)
    {
@@ -447,8 +453,19 @@ int main(int argc, char** argv)
                user = strtol(user_str, &end_str, 16);
             }
          }
-
-            // Chek outsupport with supported formats
+         else if (stricmp(argv[i], "-sort") == 0)
+         {
+            sort = true;
+         }
+         else if (stricmp(argv[i], "-l") == 0)
+         {
+            full_list = true;
+         }
+         else if (stricmp(argv[i], "-c") == 0)
+         {
+            compact = true;
+         }         
+         // Chek outsupport with supported formats
          else if (strlen(argv[i]) > 3 && argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '=')
          {
             //for (auto it = out_format_list.begin(); it != out_format_list.end(); it++)
@@ -509,22 +526,36 @@ int main(int argc, char** argv)
       }
 
       std::vector<std::string> file_list = new_disk->GetCAT(user);
+
+      fs::path p (source);
+      
       if (user == -1)
       {
-         printf("Catalog for all users \n");
+         printf("Catalog of %s for all users \n", p.filename().string().c_str());
       }
       else
       {
-         printf("Catalog for user : %X\n", user);
+         printf("Catalog of %s for USER %X\n", p.filename().string().c_str(), user);
       }
       
+      // Sort files ?
+      if (sort)
+      {
+         std::sort (file_list.begin(), file_list.end() );
+      }
+
       for (auto&i : file_list)
       {
          bool hidden = (i[9] & 0x80) == 0x80;
          bool readonly = (i[8] & 0x80) == 0x80;
          i[8] &= 0x7F;
          i[9] &= 0x7F;
-         printf("%s   %c   %c\n", i.c_str(), hidden?'H':' ', readonly?'R':' ');
+         i.insert(8, 1, '.');
+
+         if (full_list)
+            printf("%s   %c   %c\n", i.c_str(), hidden?'H':' ', readonly?'R':' ');
+         else 
+            printf("%s%c", i.c_str(), compact?';':'\n');
       }
 
       return 0;

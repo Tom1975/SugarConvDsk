@@ -27,3 +27,6 @@ Usage : SugarConvDsk source [-second=side_2_path] [destination] [-s=side] [-o=ou
     -r : If the source file is a directory, convert recursively the given directory.
     -f=filter : If the source file is a directory, set a filter for the files to convert.
     -cat=user : List the directory to standard output (no conversion is done if used). 'user' is used, unless ALLUSER is specified
+    -sort : This flag will wort the files in alphabetical order.
+    - l : Add flags H for hidden files, and R for read - only files.List isdisplayed with one file per line.
+    - c : Display file on the same line, separated with semicolumn
