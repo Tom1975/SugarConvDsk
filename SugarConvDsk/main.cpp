@@ -387,7 +387,8 @@ void PrintUsage()
    printf("    -cat=user : List the directory to standard output (no conversion is done if used). 'user' is used, unless ALLUSER is specified\n");
    printf("    -sort : This flag will wort the files in alphabetical order.\n");
    printf("    - l : Add flags H for hidden files, and R for read - only files.List isdisplayed with one file per line.\n");
-   printf("    - c : Display file on the same line, separated with semicolumn\n");
+   printf("    - c : Display file on the same line, separated with semicolumn. No result if used with -l option\n");
+   printf("    - col=x,y : specift how to display result : x column, with y space between each column. No result if used with -l or -c option\n");
 }
 
 
@@ -411,6 +412,8 @@ int main(int argc, char** argv)
    bool sort = false;
    bool full_list = false;
    bool compact;
+   unsigned int col_number = 1;
+   unsigned int col_intersize = 4;
 
    for (int i = 1; i < argc && arguments_are_ok; i++)
    {
@@ -462,10 +465,14 @@ int main(int argc, char** argv)
          {
             full_list = true;
          }
+         else if (strnicmp(argv[i], "-col=", 5) == 0)
+         {
+            sscanf(argv[i], "-col=%i,%i", &col_number, &col_intersize);
+         }         
          else if (stricmp(argv[i], "-c") == 0)
          {
             compact = true;
-         }         
+         }
          // Chek outsupport with supported formats
          else if (strlen(argv[i]) > 3 && argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '=')
          {
@@ -545,6 +552,9 @@ int main(int argc, char** argv)
          std::sort (file_list.begin(), file_list.end() );
       }
 
+      std::string output;
+      int column_counter = 0;
+      char buffer[256] = { 0 };
       for (auto&i : file_list)
       {
          bool hidden = (i[9] & 0x80) == 0x80;
@@ -554,10 +564,33 @@ int main(int argc, char** argv)
          i.insert(8, 1, '.');
 
          if (full_list)
-            printf("%s   %c   %c\n", i.c_str(), hidden?'H':' ', readonly?'R':' ');
-         else 
-            printf("%s%c", i.c_str(), compact?';':'\n');
+         {
+            sprintf(buffer, "%s %c %c\n", i.c_str(), hidden ? 'H' : '-', readonly ? 'R' : '-');
+         }
+         else
+         {
+            if (compact)
+            {
+               sprintf(buffer, "%s%c", i.c_str(), ';');
+            }
+            else
+            { 
+               // col and interlines
+               column_counter++;
+               if (column_counter == col_number)
+               {
+                  sprintf(buffer, "%s\n", i.c_str());
+                  column_counter = 0;
+               }
+               else
+               {
+                  sprintf(buffer, "%s%*s", i.c_str(), col_intersize, "");
+               }
+            }
+         }
+         output += buffer;
       }
+      printf(output.c_str());
 
       return 0;
    }
