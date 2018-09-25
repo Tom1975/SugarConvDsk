@@ -5,7 +5,7 @@ environment:
   
 branches:
   only:
-  - test_appveyor
+  - master
 clone_folder: c:\projects\cmake-init
 image:
 - Visual Studio 2017
