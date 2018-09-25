@@ -353,7 +353,8 @@ int ConversionDirectory(fs::path& source, fs::path& destination)
 
 void PrintUsage()
 {
-   printf("Usage : SugarConvDsk source [-second=side_2_path] [destination] [-s=side] [-o=outputformat] [-r] [-f=filter]\n");
+   printf("Usage : SugarConvDsk source [destination] [-s=side] [-second=side_2_path][-o=outputformat] [-r] [-f=filter]\n");
+   printf("    or  SugarConvDsk -cat=user [-sort] [-l] [-c] source    \n");
    printf("\n");
    printf("    -s=side : Select side of the disk to convert.\n");
    printf("       Side can be 1 or 2\n");
