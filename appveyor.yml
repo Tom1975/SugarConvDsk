@@ -47,6 +47,6 @@ only_commits:
     - CPCCoreEMu/
 
 artifacts:
-    - path: SugarConvDsk.zip
+    - path: '**\SugarConvDsk.zip'
       name: SugarConvDsk
 
