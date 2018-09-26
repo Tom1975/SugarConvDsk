@@ -31,7 +31,7 @@ build_script:
 - cmake --build . --config %configuration% --target INSTALL
 
 after_build:
-- 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\Release\SugarConvDsk.exe
+- 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
 
 test_script:
 - cmd:  |-
