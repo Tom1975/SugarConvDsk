@@ -35,9 +35,7 @@ install:
   
 before_build:
 - cmd: |-
-    if %platform%==x64 set CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
-    else set CMAKE_GENERATOR="Visual Studio 15 2017"
-    
+    if %platform%==x64 (    set CMAKE_GENERATOR="Visual Studio 15 2017 Win64" ) else (   set CMAKE_GENERATOR="Visual Studio 15 2017")   
     mkdir build
     cd build
     cmake --version
@@ -57,9 +55,10 @@ build_script:
 - sh: |-
     make all
 
-#after_build:
-#- cmd :|
-#     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+after_build:
+- cmd :|
+     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+     dir
     
 
 test_script:
