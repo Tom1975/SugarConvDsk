@@ -8,9 +8,6 @@ branches:
   - master
   - appveyor_build_linux
   
-clone_folder: if $(isWindows) {
-                c:\projects\cmake-init
-              }
 
 image:
 - Visual Studio 2017
@@ -66,7 +63,7 @@ after_build:
 
 test_script:
 - cmd:  |-
-    cd c:\projects\cmake-init\build\Tests
+    cd c:\projects\SugarConvDsk\build\Tests
     cd %configuration%
     Tests.exe
   
