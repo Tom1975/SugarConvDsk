@@ -18,7 +18,7 @@ configuration:
 #- Debug
 
 platform:
-#- x86
+- x86
 - x64
 
 install:
@@ -40,7 +40,7 @@ before_build:
     cd build
     cmake --version
     echo %CMAKE_GENERATOR%
-    cmake .. -G %CMAKE_GENERATOR_SUFFIX%
+    cmake .. -G %CMAKE_GENERATOR%
 - sh: |-
     mkdir build
     cd build
