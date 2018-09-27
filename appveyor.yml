@@ -47,17 +47,16 @@ before_build:
 
     
 build_script:
-- if( $isLinux) {
-    make all
-} else { 
+- cmd : |- 
     cmake --build . --config %configuration%
     cmake --build . --config %configuration% --target INSTALL
-    }
+- sh: |-
+    make all
 
 after_build:
-- if ($isWindow) { 
-    7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
-    }
+- cmd :|
+     a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+    
 
 test_script:
 - cmd:  |-
