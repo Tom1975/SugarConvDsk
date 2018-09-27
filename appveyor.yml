@@ -36,11 +36,10 @@ install:
   
 before_build:
 - cmd: |-
-    if %platform%==x64) set CMAKE_GENERATOR_SUFFIX=" Win64"
+    if %platform%==x64 set CMAKE_GENERATOR_SUFFIX=" Win64"
     mkdir build
     cd build
     cmake --version
-    if 
     cmake .. -G "Visual Studio 15 2017"%CMAKE_GENERATOR_SUFFIX%
 - sh: |-
     mkdir build
