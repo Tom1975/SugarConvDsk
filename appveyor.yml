@@ -8,7 +8,9 @@ branches:
   - master
   - appveyor_build_linux
   
-clone_folder: c:\projects\cmake-init
+clone_folder: if $(isWindows) {
+                c:\projects\cmake-init
+              }
 
 image:
 - Visual Studio 2017
@@ -19,7 +21,7 @@ configuration:
 #- Debug
 
 platform:
-- x86
+#- x86
 - x64
 
 install:
@@ -37,9 +39,11 @@ install:
 before_build:
 - cmd: |-
     if %platform%==x64 set CMAKE_GENERATOR_SUFFIX=" Win64"
+    echo GENERATOR : %CMAKE_GENERATOR_SUFFIX%
     mkdir build
     cd build
     cmake --version
+    echo "Visual Studio 15 2017"%CMAKE_GENERATOR_SUFFIX%
     cmake .. -G "Visual Studio 15 2017"%CMAKE_GENERATOR_SUFFIX%
 - sh: |-
     mkdir build
