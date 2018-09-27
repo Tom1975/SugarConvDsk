@@ -35,13 +35,14 @@ install:
   
 before_build:
 - cmd: |-
-    if %platform%==x64 set CMAKE_GENERATOR_SUFFIX=" Win64"
-    echo GENERATOR : %CMAKE_GENERATOR_SUFFIX%
+    if %platform%==x64 set CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+    else set CMAKE_GENERATOR="Visual Studio 15 2017"
+    
     mkdir build
     cd build
     cmake --version
-    echo "Visual Studio 15 2017"%CMAKE_GENERATOR_SUFFIX%
-    cmake .. -G "Visual Studio 15 2017"%CMAKE_GENERATOR_SUFFIX%
+    echo %CMAKE_GENERATOR%
+    cmake .. -G %CMAKE_GENERATOR_SUFFIX%
 - sh: |-
     mkdir build
     cd build
@@ -56,9 +57,9 @@ build_script:
 - sh: |-
     make all
 
-after_build:
-- cmd :|
-     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+#after_build:
+#- cmd :|
+#     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
     
 
 test_script:
@@ -75,6 +76,6 @@ only_commits:
     - CPCCoreEMu/
 
 artifacts:
-    - path: '**\SugarConvDsk.zip'
+    - path: '**\SugarConvDsk.exe'
       name: SugarConvDsk
 
