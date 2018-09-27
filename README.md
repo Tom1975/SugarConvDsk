@@ -9,7 +9,7 @@ Convert any Amstrad CPC dump file format to other format
 Usage
 =====
 Usage : SugarConvDsk source [destination] [-s=side] [-second=path][-o=outputformat] [-r] [-f=filter]
-    or  SugarConvDsk -cat=user [-sort] [-sort] source 
+    or  SugarConvDsk -cat=user [-sort] [-l] [-c] source 
 
 	If -cat option is not used, SugarConvDsk will perform a format conversion.
 

@@ -30,6 +30,9 @@ build_script:
 - cmake --build . --config %configuration%
 - cmake --build . --config %configuration% --target INSTALL
 
+after_build:
+- 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+
 test_script:
 - cmd:  |-
     cd c:\projects\cmake-init\build\Tests
@@ -44,6 +47,6 @@ only_commits:
     - CPCCoreEMu/
 
 artifacts:
-    - path: build\SugarConvDsk\Release\SugarConvDsk.exe
+    - path: '**\SugarConvDsk.zip'
       name: SugarConvDsk
 
