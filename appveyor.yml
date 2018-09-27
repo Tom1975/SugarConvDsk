@@ -55,9 +55,9 @@ build_script:
 - sh: |-
     make all
 
-after_build:
-- cmd :|
-     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+#after_build:
+#- cmd :|
+#     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
     
 
 test_script:
