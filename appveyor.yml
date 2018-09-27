@@ -19,7 +19,8 @@ configuration:
 - Debug
 
 platform:
-- Win32
+- x86
+- x64
 
 install:
 - git submodule init 
@@ -55,7 +56,7 @@ build_script:
 
 after_build:
 - cmd :|
-     a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+     7za SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
     
 
 test_script:
