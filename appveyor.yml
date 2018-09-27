@@ -6,18 +6,32 @@ environment:
 branches:
   only:
   - master
+  - appveyor_build_linux
+  
 clone_folder: c:\projects\cmake-init
+
 image:
 - Visual Studio 2017
+- Ubuntu
+
 configuration:
 - Release   
 - Debug
+
 platform:
 - Win32
 
 install:
-- cmd: git submodule init 
-- cmd: git submodule update
+- git submodule init 
+- git submodule update
+- sh: |- 
+    echo 'Installing G++ 7'
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    sudo apt-get update -qq
+    if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-7; fi
+    if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50
+
   
 before_build:
 - cmd: |-
@@ -25,13 +39,25 @@ before_build:
     cd build
     cmake --version
     cmake .. -G "Visual Studio 15 2017"
+- sh: |-
+    mkdir build
+    cd build
+    cmake --version
+    cmake .. 
+
     
 build_script:
-- cmake --build . --config %configuration%
-- cmake --build . --config %configuration% --target INSTALL
+- if( $isLinux) {
+    make all
+} else { 
+    cmake --build . --config %configuration%
+    cmake --build . --config %configuration% --target INSTALL
+    }
 
 after_build:
-- 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+- if ($isWindow) { 
+    7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+    }
 
 test_script:
 - cmd:  |-
