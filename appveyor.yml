@@ -51,8 +51,9 @@ build_script:
 - sh: |-
     make all
 
-#after_build:
+after_build:
 #- cmd : 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+- cmd: dir
 
 test_script:
 - cmd:  |-
@@ -66,6 +67,7 @@ only_commits:
     - appveyor.yml
     - SugarConvDsk/
     - CPCCoreEMu/
+	- Tests/
 
 artifacts:
     - path: '**\SugarConvDsk.exe'
