@@ -18,19 +18,15 @@ configuration:
 #- Debug
 
 platform:
-#- x86
+- x86
 - x64
 
 install:
 - git submodule init 
 - git submodule update
 - sh: |- 
-    echo 'Installing G++ 7'
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    sudo apt-get update -qq
-    if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-7; fi
-    if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
-    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50
+    echo 'Update to gcc8'
+    sudo update-alternatives --set gcc /usr/bin/gcc-8
 
   
 before_build:
@@ -55,10 +51,9 @@ build_script:
 - sh: |-
     make all
 
-#after_build:
-#- cmd :|
-#     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
-    
+after_build:
+- cmd :|
+     7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe 
 
 test_script:
 - cmd:  |-
