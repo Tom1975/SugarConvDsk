@@ -21,9 +21,9 @@
 
 namespace fs = std::experimental::filesystem;
 
-const std::string out_dir = "out";
-const std::string expected_dir = "Expected";
-const std::string dump_dir = "Ressources//Dumps";
+const fs::path out_dir = "out";
+const fs::path expected_dir = "Expected";
+const fs::path dump_dir = "Ressources//Dumps";
 
 /////////////////////////////////////////////////////////////
 // Helper functions
@@ -119,7 +119,7 @@ TEST(SugarConvDsk, Conversion_2IPF)
 	DiskBuilder disk_builder;
 	std::vector<FormatType*> list_formats = disk_builder.GetFormatsList(DiskBuilder::WRITE);
 
-	GetDirectoryContent(dump_dir.c_str(), file_list);
+	GetDirectoryContent(dump_dir.string().c_str(), file_list);
 	
 	const char* ext = "IPF";
 	for (auto&it : file_list)
