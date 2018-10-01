@@ -70,10 +70,12 @@ only_commits:
     - Tests/
 
 artifacts:
-    - path: if ($isLinux) {
-      '**\SugarConvDsk'
+    if ($isLinux) {
+      - path: '**\SugarConvDsk'
+      name: SugarConvDsk
     } else {
-      '**\SugarConvDsk.exe'
+      - path: '**\SugarConvDsk.exe'
+      name: SugarConvDsk
     }
-    name: SugarConvDsk
+    
 
