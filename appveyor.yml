@@ -15,7 +15,7 @@ image:
 
 configuration:
 - Release   
-#- Debug
+- Debug
 
 platform:
 - x86
@@ -70,6 +70,10 @@ only_commits:
     - Tests/
 
 artifacts:
-    - path: '**\SugarConvDsk.exe'
-      name: SugarConvDsk
+    - path: if ($isLinux) {
+      '**\SugarConvDsk'
+    } else {
+      '**\SugarConvDsk.exe'
+    }
+    name: SugarConvDsk
 
