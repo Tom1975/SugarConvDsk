@@ -1373,7 +1373,7 @@ unsigned int FindNextSector(unsigned char* buffer, unsigned int size, unsigned i
       ++offset;
    }
 
-   if (offset == size) return -1;
+   if ((offset + size_to_search * 8) >= size) return -1;
    return offset;
 }
 
