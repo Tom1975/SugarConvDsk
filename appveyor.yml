@@ -53,7 +53,7 @@ build_script:
 
 after_build:
 - cmd : 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
-- artifact_name : if ($isLinux) { '**\SugarConvDsk' } else { '**\SugarConvDsk.zip' }
+- if ($isLinux) { set artifact_name='**\SugarConvDsk' } else { artifact_name='**\SugarConvDsk.zip' }
 - echo %artifact_name%
 #- cmd: dir
 
