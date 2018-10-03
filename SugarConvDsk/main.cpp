@@ -295,7 +295,7 @@ int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side
 
 
    // Save with the correct format
-   out_support->SaveDisk(destination.generic_string().c_str(), new_disk);
+   out_support->SaveDisk(destination.string().c_str(), new_disk);
    printf("Saving %s \n", new_disk->GetCurrentLoadedDisk());
 
    return return_value;
@@ -303,7 +303,7 @@ int ConversionFile(fs::path& source, fs::path& destination, bool use_second_side
 
 int ConversionDirectory(fs::path& source, fs::path& destination)
 {
-   printf("DIRECTORY => %s\n", source.generic_string().c_str());
+   printf("DIRECTORY => %s\n", source.string().c_str());
 
    // -r and subdirs ?
    for (auto& p : fs::directory_iterator(source))
@@ -311,7 +311,7 @@ int ConversionDirectory(fs::path& source, fs::path& destination)
       if (fs::is_regular_file(p.status()))
       {
          // Filter ? - TODO
-         if ( strlen(filter) == 0 || MatchTextWithWildcards(p.path().filename().generic_string(), filter))
+         if ( strlen(filter) == 0 || MatchTextWithWildcards(p.path().filename().string(), filter))
          {
             fs::path input_file = p.path();
             fs::path output_file = destination;
