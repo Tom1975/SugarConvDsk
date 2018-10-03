@@ -52,11 +52,15 @@ build_script:
     make all
 
 after_build:
-- cmd : 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
-- cmd : set artifact_name='**\SugarConvDsk'
-- sh:   artifact_name='**\SugarConvDsk.zip'
-- cmd: echo %artifact_name%
-- sh: echo $artifact_name
+- cmd : |- 
+    7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+    set artifact_name='**\SugarConvDsk'
+    echo %artifact_name%
+    appveyor PushArtifact %artifact_name%
+- sh:  |-
+    artifact_name='**\SugarConvDsk.zip'
+    echo $artifact_name
+    appveyor PushArtifact $artifact_name
 
 test_script:
 - cmd:  |-
@@ -71,8 +75,4 @@ only_commits:
     - SugarConvDsk/
     - CPCCoreEMu/
     - Tests/
-
-artifacts:
-    - path: $artifact_name
-      name: SugarConvDsk
 
