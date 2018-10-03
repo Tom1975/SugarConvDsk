@@ -58,7 +58,8 @@ after_build:
     echo %artifact_name%
     appveyor PushArtifact %artifact_name%
 - sh:  |-
-    artifact_name=SugarConvDsk
+    gzip $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk
+    artifact_name=SugarConvDsk.gz
     echo $artifact_name
     appveyor PushArtifact $artifact_name
 
