@@ -23,7 +23,7 @@ namespace fs = std::experimental::filesystem;
 
 const fs::path out_dir = "out";
 const fs::path expected_dir = "Expected";
-const fs::path dump_dir = "Ressources//Dumps";
+const fs::path dump_dir = "Ressources/Dumps";
 
 /////////////////////////////////////////////////////////////
 // Helper functions
@@ -132,7 +132,7 @@ TEST(SugarConvDsk, Conversion_2IPF)
 
 		std::string options = std::string("-o=") + ext;
 
-		if (!CompareConversion(in_file.string().c_str(), out_file.string().c_str(), options.c_str(), error_string))
+ 		if (!CompareConversion(in_file.string().c_str(), out_file.string().c_str(), options.c_str(), error_string))
 		{
 			test_ok = false;
 			str << "Error : " << in_file.string() << " -> "<< ext <<" : "<< error_string << "\n";
