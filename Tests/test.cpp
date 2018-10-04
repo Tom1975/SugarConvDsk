@@ -58,12 +58,12 @@ bool CompareConversion (const char* in_file, const char* out_file, const char* c
 		error_string = "SugarConvDsk return an error";
 		return false;
 	}
-
+   
 	// Check generated file
 	DiskBuilder disk_builder;
 	IDisk * d1, *d2;
 	FormatType *type;
-
+   
 	if (!disk_builder.CanLoad(in_file, type))
 	{
 		error_string = "Cannot load input file";
@@ -154,6 +154,49 @@ TEST(SugarConvDsk, DSK_HFE)
 		FAIL() << error_string;
 	}
 }
+
+// This test seems to crash only on 64bit release ...
+TEST(SugarConvDsk, Disco_IPF_64bits_Release)
+{
+   std::string error_string;
+   // Check generated file
+   DiskBuilder disk_builder;
+   IDisk * d1, *d2;
+   FormatType *type;
+
+   std::string filename_to_test = "Discology 6.0 Plus.scp.IPF";
+   const fs::path in_file = fs::path(dump_dir) / filename_to_test;
+
+   if (!disk_builder.CanLoad(in_file.string().c_str(), type))
+   {
+      error_string = "Cannot load input file";
+      FAIL() << error_string;
+   }
+
+   if (disk_builder.LoadDisk(in_file.string().c_str(), d1) != 0)
+   {
+      error_string = "Error while loading input file";
+      FAIL() << error_string;
+   }
+
+   filename_to_test = "Discology 6.0 Plus.scp";
+   const fs::path out_file = fs::path(dump_dir) / filename_to_test;
+
+   if (disk_builder.LoadDisk(out_file.string().c_str(), d2) != 0)
+   {
+      error_string = "Error while loading output file";
+      FAIL() << error_string;
+   }
+   if (d1->CompareToDisk(d2, false) != 0)
+   {
+      error_string = "Input and Output are not equivalent";
+      FAIL() << error_string;
+   }
+   delete d1;
+   delete d2;
+   SUCCEED();
+}
+
 
 // Check conversion : EDsk to HFE
 TEST(SugarConvDsk, EDsk_HFE)
