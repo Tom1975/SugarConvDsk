@@ -53,13 +53,14 @@ build_script:
 
 after_build:
 - cmd : |- 
-    7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
-    set artifact_name=SugarConvDsk.zip
+    7z a SugarConvDsk$platform.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+    set artifact_name=SugarConvDsk$platform.zip
     echo %artifact_name%
     appveyor PushArtifact %artifact_name%
 - sh:  |-
     gzip $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk
-    artifact_name=$APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk.gz
+    mv $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk.gz $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk$platform.gz
+    artifact_name=$APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk$platform.gz
     echo $artifact_name
     appveyor PushArtifact $artifact_name
 
