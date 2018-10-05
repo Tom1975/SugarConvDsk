@@ -73,7 +73,7 @@ test_script:
     cd $APPVEYOR_BUILD_FOLDER/build/Tests
     cd %configuration%
     Tests
-	
+
 only_commits:
   files:
     - CMakeLists.txt
