@@ -67,7 +67,7 @@ test_script:
 - cmd:  |-
     cd c:\projects\SugarConvDsk\build\Tests
     cd %configuration%
-    if %platform%==x86 (Tests.exe)
+    Tests.exe
   
 only_commits:
   files:

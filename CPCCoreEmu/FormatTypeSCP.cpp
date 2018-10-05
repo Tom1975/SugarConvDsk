@@ -202,7 +202,7 @@ int FormatTypeSCP::LoadDisk(const unsigned char* buffer, size_t size, IDisk*& cr
       // Adjust missing tracks :
       for (int side = 0; side < new_disk->nb_sides_; side++)
       {
-         for (int track = 0; track < 43; track++)
+         for (int track = 0; track < 43 && track < new_disk->side_[side].nb_tracks; track++)
          {
             if (new_disk->side_[side].tracks[track].revolution == NULL)
             {
