@@ -66,9 +66,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_BINA
 
 # Link test executable against gtest & gtest_main
 target_include_directories( Tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_LIST_DIR}/../zlib)
-target_link_libraries(Tests Shlwapi.lib Comctl32.lib XmlLite.lib gtest gtest_main
-                                             Msimg32.lib 
-                                             Winmm.lib)
+target_link_libraries(Tests gtest gtest_main)
 
 add_test( NAME Tests COMMAND Tests)
 

@@ -69,7 +69,11 @@ test_script:
     cd c:\projects\SugarConvDsk\build\Tests
     cd %configuration%
     Tests.exe
-  
+- sh:  |-
+    cd $APPVEYOR_BUILD_FOLDER/build/Tests
+    cd %configuration%
+    Tests
+	
 only_commits:
   files:
     - CMakeLists.txt
