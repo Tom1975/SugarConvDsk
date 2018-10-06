@@ -9,8 +9,7 @@ set (SKIP_INSTALL_ALL ON)
 
 add_subdirectory(zlib)
 add_subdirectory(SugarConvDsk)
-if(MSVC)
-	add_subdirectory(googletest/googletest)
-	add_subdirectory(Tests)
-endif()
+add_subdirectory(googletest/googletest)
+add_subdirectory(Tests)
+
 
