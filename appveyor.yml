@@ -71,7 +71,7 @@ test_script:
     Tests.exe
 - sh:  |-
     cd $APPVEYOR_BUILD_FOLDER/build/Tests
-    cd %configuration%
+    cd $configuration
     Tests
 
 only_commits:
