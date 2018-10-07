@@ -67,6 +67,7 @@ public:
    IContainedElement(ITypeManager* type_manager) : type_manager_(type_manager)
    {
    };
+   virtual ~IContainedElement() {};
    virtual int GetType() = 0;
 
    // Number of inner files

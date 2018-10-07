@@ -184,6 +184,7 @@ int FormatTypeEDSK::LoadDisk(const unsigned char* buffer, size_t size, IDisk*& c
                if (memcmp(header, "Track-Info", 10) != 0)
                {
                   delete new_disk;
+                  new_disk = nullptr;
                   return -2;
                }
 

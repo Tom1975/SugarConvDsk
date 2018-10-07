@@ -432,6 +432,8 @@ void ZippedFile::InitUnzip()
 
                      added_element = zip_file_.InsertFile(filename, zipped_buffer);
 
+                     if (added_element == nullptr)
+                        return;
                      added_element->offset_ = off_local_header;
 
                      // Update file type count

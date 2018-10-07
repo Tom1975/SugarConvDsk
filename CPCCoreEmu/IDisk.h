@@ -87,6 +87,7 @@ public:
 
    virtual int GetNumberOfSide() { return nb_sides_; };
    virtual unsigned int GetNumberOfTracks(int side) { return side_[side].nb_tracks; };
+   virtual unsigned int GetNumberOfTracks() { return side_[0].nb_tracks > side_[1].nb_tracks ? side_[0].nb_tracks : side_[1].nb_tracks; };
 
    virtual unsigned int GetNumberOfRevolutions(int side, int track)
    {
