@@ -71,7 +71,9 @@ test_script:
     Tests.exe
 - sh:  |-
     cd $APPVEYOR_BUILD_FOLDER/build/Tests
-    Tests
+    make install
+    chmod +777 SugarConvDsk
+    ./Tests
 
 only_commits:
   files:
