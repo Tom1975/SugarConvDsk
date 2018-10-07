@@ -10,7 +10,7 @@ branches:
   
 
 image:
-- Visual Studio 2017
+#- Visual Studio 2017
 - Ubuntu1804
 
 configuration:
@@ -71,7 +71,6 @@ test_script:
     Tests.exe
 - sh:  |-
     cd $APPVEYOR_BUILD_FOLDER/build/Tests
-    cd $CONFIGURATION
     Tests
 
 only_commits:
