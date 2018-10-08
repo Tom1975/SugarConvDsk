@@ -49,7 +49,8 @@ bool CompareFiles(const std::string& p1, const std::string& p2) {
 
 bool CompareConversion (const char* in_file, const char* out_file, const char* conversion_options, std::string& error_string)
 {
-	fs::remove( fs::path(out_file));
+   std::error_code code;
+	fs::remove( fs::path(out_file), code);
 	std::stringstream str;
 #ifdef _WIN32
 	str << "SugarConvDsk \"" << in_file << "\" "<< conversion_options << " \"" << out_file << "\"";
