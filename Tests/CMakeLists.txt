@@ -110,3 +110,4 @@ else()
 	install ( DIRECTORY "./Expected" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 	install ( DIRECTORY "./Ressources" DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 endif()
+
