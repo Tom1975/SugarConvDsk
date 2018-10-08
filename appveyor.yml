@@ -83,11 +83,11 @@ deploy:
   release: SugarConvDsk-v1.0.$(appveyor_build_version)
   description: SugarConvDsk
   provider: GitHub
+  tag: $(APPVEYOR_REPO_TAG_NAME) 
   auth_token:
     secure: /Nr3QtuzpAw6S9iRX/KJ5f3RGXpx9xiuhrxz+jLV5aVSVrhNPX2ZTFaNn0ToOBDx
   artifact: SugarConvDsk_x86.gz,SugarConvDsk_x64.gz,SugarConvDsk_x86.zip,SugarConvDsk_x64.zip
   draft: false
   prerelease: true
   on:
-    branch: master                 # release from master branch only
-    appveyor_repo_tag: true        # deploy on tag push only
+    APPVEYOR_REPO_TAG : true       # deploy on tag push only
