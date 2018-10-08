@@ -84,7 +84,7 @@ deploy:
   description: SugarConvDsk
   provider: GitHub
   auth_token:
-    secure: 0793710b53a116e82348cf6a90c864f9445d7c21
+    secure: /Nr3QtuzpAw6S9iRX/KJ5f3RGXpx9xiuhrxz+jLV5aVSVrhNPX2ZTFaNn0ToOBDx
   artifact: /.*\SugarConvDsk*.*
   draft: false
   prerelease: true
