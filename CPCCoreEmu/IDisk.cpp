@@ -1368,12 +1368,12 @@ unsigned int FindNextSector(unsigned char* buffer, unsigned int size, unsigned i
       0, 1, 0, 1, 0, 1, 0, 0 // 54
    };
    // Find this array
-   while (offset < size && memcmp(&buffer[offset], pattern_in_bits, size_to_search * 8) != 0)
+   while ( (offset + size_to_search * 8) < size && memcmp(&buffer[offset], pattern_in_bits, size_to_search * 8) != 0)
    {
       ++offset;
    }
 
-   if (offset == size) return -1;
+   if ((offset + size_to_search * 8) >= size) return -1;
    return offset;
 }
 

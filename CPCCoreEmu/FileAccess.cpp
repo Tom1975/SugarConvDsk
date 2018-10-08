@@ -62,6 +62,7 @@ unsigned int GetDirectoryContent(const char* path, std::vector<std::string>& fil
     FreeDosObject(DOS_FIB, fib);
 #else
    for (auto& p : fs::directory_iterator(path))
+
    {
       if (fs::is_directory(p.status()))
       {

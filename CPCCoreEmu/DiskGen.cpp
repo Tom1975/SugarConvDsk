@@ -305,6 +305,26 @@ void DiskGen::Recalib()
    }
 }
 
+
+int DiskGen::LoadDisk(IDisk* new_disk)
+{
+   CleanDisk();
+   disk_ = new_disk;
+
+   disk_->SetFixedSpeed(fixed_speed_);
+   disk_->SetLog(log_);
+   current_side_ = 0;
+
+   // Juste check there is enough tracks...
+   if (disk_->GetNumberOfTracks(0) <= current_track_)
+      current_track_ = 0;
+
+   disk_present_ = true;
+
+
+   return 0;
+}
+
 int DiskGen::LoadDisk(DataContainer* container, ILoadingProgress* loading_progress)
 {
    // Get proper IDisk

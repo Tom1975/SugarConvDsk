@@ -6,47 +6,78 @@ environment:
 branches:
   only:
   - master
-clone_folder: c:\projects\cmake-init
+  - appveyor_build_linux
+  
+
 image:
 - Visual Studio 2017
+- Ubuntu1804
+
 configuration:
 - Release   
 - Debug
+
 platform:
-- Win32
+- x86
+- x64
 
 install:
-- cmd: git submodule init 
-- cmd: git submodule update
+- git submodule init 
+- git submodule update
+- sh: |- 
+    echo 'Update to gcc8'
+    sudo update-alternatives --set gcc /usr/bin/gcc-8
+
   
 before_build:
 - cmd: |-
+    if %platform%==x64 (    set CMAKE_GENERATOR="Visual Studio 15 2017 Win64" ) else (   set CMAKE_GENERATOR="Visual Studio 15 2017")   
     mkdir build
     cd build
     cmake --version
-    cmake .. -G "Visual Studio 15 2017"
+    echo %CMAKE_GENERATOR%
+    cmake .. -G %CMAKE_GENERATOR%
+- sh: |-
+    mkdir build
+    cd build
+    cmake --version
+    cmake .. 
+
     
 build_script:
-- cmake --build . --config %configuration%
-- cmake --build . --config %configuration% --target INSTALL
+- cmd : |- 
+    cmake --build . --config %configuration%
+    cmake --build . --config %configuration% --target INSTALL
+- sh: |-
+    make all
 
 after_build:
-- 7z a SugarConvDsk.zip %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+- cmd : |- 
+    set artifact_name=SugarConvDsk_%platform%.zip
+    7z a %artifact_name% %APPVEYOR_BUILD_FOLDER%\build\SugarConvDsk\%configuration%\SugarConvDsk.exe
+    appveyor PushArtifact %artifact_name%
+- sh:  |-
+    artifact_name=$APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk_$PLATFORM.gz
+    gzip -k $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk
+    mv $APPVEYOR_BUILD_FOLDER/build/SugarConvDsk/$configuration/SugarConvDsk.gz $artifact_name
+    appveyor PushArtifact $artifact_name
 
 test_script:
 - cmd:  |-
-    cd c:\projects\cmake-init\build\Tests
+    cd c:\projects\SugarConvDsk\build\Tests
     cd %configuration%
     Tests.exe
-  
+- sh:  |-
+    cd $APPVEYOR_BUILD_FOLDER/build/Tests
+    make install
+    chmod +777 SugarConvDsk
+    ./Tests
+
 only_commits:
   files:
     - CMakeLists.txt
     - appveyor.yml
     - SugarConvDsk/
     - CPCCoreEMu/
-
-artifacts:
-    - path: '**\SugarConvDsk.zip'
-      name: SugarConvDsk
+    - Tests/
 

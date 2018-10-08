@@ -66,9 +66,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_BINA
 
 # Link test executable against gtest & gtest_main
 target_include_directories( Tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCoreEmu ${CMAKE_CURRENT_LIST_DIR}/../zlib)
-target_link_libraries(Tests Shlwapi.lib Comctl32.lib XmlLite.lib gtest gtest_main
-                                             Msimg32.lib 
-                                             Winmm.lib)
+target_link_libraries(Tests gtest gtest_main)
 
 add_test( NAME Tests COMMAND Tests)
 
@@ -84,20 +82,32 @@ else ()
 	target_link_libraries ( Tests  m stdc++fs libz.a)
 endif()
 
-install ( FILES ${SugarConvDsk_BINARY_DIR}/Debug/SugarConvDsk.exe CONFIGURATIONS Debug  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug )
-install ( FILES ${SugarConvDsk_BINARY_DIR}/Release/SugarConvDsk.exe CONFIGURATIONS Release  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release )
-install ( FILES ${SugarConvDsk_BINARY_DIR}/RelWithDebInfo/SugarConvDsk.exe CONFIGURATIONS RelWithDebInfo  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo )
+if( MSVC)
+	install ( FILES ${SugarConvDsk_BINARY_DIR}/Debug/SugarConvDsk.exe CONFIGURATIONS Debug  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug )
+	install ( FILES ${SugarConvDsk_BINARY_DIR}/Release/SugarConvDsk.exe CONFIGURATIONS Release  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release )
+	install ( FILES ${SugarConvDsk_BINARY_DIR}/RelWithDebInfo/SugarConvDsk.exe CONFIGURATIONS RelWithDebInfo  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo )
 
-# Output temporary directory
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug/out)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Release/out)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/out)
+	# Output temporary directory
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Debug/out)
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Release/out)
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/out)
 
-# Copy file to compare
-install ( DIRECTORY "./Expected" CONFIGURATIONS Debug DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/ )
-install ( DIRECTORY "./Expected" CONFIGURATIONS Release DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/ )
-install ( DIRECTORY "./Expected" CONFIGURATIONS RelWithDebInfo DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/ )
+	# Copy file to compare
+	install ( DIRECTORY "./Expected" CONFIGURATIONS Debug DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/ )
+	install ( DIRECTORY "./Expected" CONFIGURATIONS Release DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/ )
+	install ( DIRECTORY "./Expected" CONFIGURATIONS RelWithDebInfo DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/ )
 
-install ( DIRECTORY "./Ressources" CONFIGURATIONS Debug DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/ )
-install ( DIRECTORY "./Ressources" CONFIGURATIONS Release DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/ )
-install ( DIRECTORY "./Ressources" CONFIGURATIONS RelWithDebInfo DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/ )
+	install ( DIRECTORY "./Ressources" CONFIGURATIONS Debug DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/ )
+	install ( DIRECTORY "./Ressources" CONFIGURATIONS Release DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/ )
+	install ( DIRECTORY "./Ressources" CONFIGURATIONS RelWithDebInfo DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/ )
+else()
+	install ( FILES ${SugarConvDsk_BINARY_DIR}/SugarConvDsk DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+	# Output temporary directory
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/out)
+
+	# Copy file to compare
+	install ( DIRECTORY "./Expected" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	install ( DIRECTORY "./Ressources" DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+endif()
+

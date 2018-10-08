@@ -76,6 +76,7 @@ int FormatTypeIPF::LoadDisk(const unsigned char* buffer, size_t size, IDisk*& cr
    else
    {
       delete created_disk;
+      created_disk = nullptr;
       return FILE_ERROR;
    }
 }
