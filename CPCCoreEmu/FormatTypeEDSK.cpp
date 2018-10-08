@@ -447,6 +447,7 @@ int FormatTypeEDSK::SaveDisk(const char* file_path, IDisk* disk, ILoadingProgres
             {
                // Allocate proper size
                unsigned short size = (dib[0x34 + i + (j * disk->nb_sides_)] << 8);
+               // TODO : check buffer overrun
 
                unsigned char* track_data = new unsigned char[size];
                memset(track_data, 0, size);
