@@ -18,13 +18,6 @@ class DiskGen : public ITypeManager
 {
 public:
 
-   typedef enum
-   {
-      AUTO_UNKNOWN = 0,
-      AUTO_CPM = 1,
-      AUTO_FILE = 2
-   } AutorunType;
-
    using CodageMfm = enum
    {
       CODE_MFM,
@@ -169,7 +162,7 @@ public:
    void StartMotor(bool on) { ComputeSpeed(on ? 1 : 2); };
    bool IsMotorOn();
 
-   DiskGen::AutorunType GetAutorun(char* buffer, unsigned int size_of_buffer);
+   IDisk::AutorunType GetAutorun(char* buffer, unsigned int size_of_buffer);
 
    //////////////////////////////////
    // Signal access

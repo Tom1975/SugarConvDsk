@@ -59,6 +59,13 @@ public:
       FACE_BOTH = 3,
    };
 
+   typedef enum
+   {
+      AUTO_UNKNOWN = 0,
+      AUTO_CPM = 1,
+      AUTO_FILE = 2
+   } AutorunType;
+
    // Format support
    const char* GetCurrentLoadedDisk() { return current_disk_path_.c_str(); };
    virtual IDisk::FaceSelection FilterSide(IDisk::FaceSelection face_selection);
@@ -98,7 +105,7 @@ public:
 
    bool IsDiskModified() const { return disk_modified_; };
 
-   std::vector<std::string>  GetCAT(int user=0);
+   std::vector<std::string>  GetCAT(IDisk::AutorunType& autorun_type, int user=0);
 
    ///////////////////////////////////////////////////////////////
    // Usefull generic fonctions

@@ -532,8 +532,8 @@ int main(int argc, char** argv)
          printf(" !! Error loading disk !!\n");
          return -1;
       }
-
-      std::vector<std::string> file_list = new_disk->GetCAT(user);
+      IDisk::AutorunType autorun_type;
+      std::vector<std::string> file_list = new_disk->GetCAT(autorun_type, user);
 
       fs::path p (source);
       

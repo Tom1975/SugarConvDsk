@@ -81,7 +81,7 @@ only_commits:
 
 deploy:
   release: SugarConvDsk-v1.0.$(appveyor_build_version)
-  description: SugarConvDsk
+  description: SugarConvDsk tool. Zip are for windows system, .gz for linux.
   provider: GitHub
   tag: $(APPVEYOR_REPO_TAG_NAME) 
   auth_token:

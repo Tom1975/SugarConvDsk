@@ -2870,10 +2870,11 @@ bool ValidName(std::string str)
 }
 
 
-//DiskGen::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
-std::vector<std::string>  IDisk::GetCAT(int user)
+//IDisk::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
+std::vector<std::string>  IDisk::GetCAT(IDisk::AutorunType& autorun_type, int user)
 {
    std::vector<std::string> filename_vector;
+   autorun_type = IDisk::AUTO_UNKNOWN;
 
    // Get info
    IDisk::Track track_info;
@@ -2900,12 +2901,14 @@ std::vector<std::string>  IDisk::GetCAT(int user)
    if ((track_info.list_sector_.at(0).r & 0xC0) == 0x40)
    {
       first_sector = 0x41;
+      autorun_type = IDisk::AUTO_FILE;
    }
    // DATA
    else if ((track_info.list_sector_.at(0).r & 0xC0) == 0xC0)
    {
       index_cat = 0;
       first_sector = 0xC1;
+      autorun_type = IDisk::AUTO_FILE;
    }
    // IBM
    else if ((track_info.list_sector_.at(0).r & 0xC0) == 0x00
@@ -2913,6 +2916,7 @@ std::vector<std::string>  IDisk::GetCAT(int user)
    {
       index_cat = 1;
       first_sector = 0x01;
+      autorun_type = IDisk::AUTO_CPM;
    }
 
    if (index_cat != 0)

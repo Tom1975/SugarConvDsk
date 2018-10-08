@@ -573,14 +573,14 @@ bool FindName(std::vector<std::string>& filename_vector, const char* name, const
 
 
 
-DiskGen::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
+IDisk::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buffer)
 {
-   AutorunType ret;
+   IDisk::AutorunType ret;
    bool end = false;
    int nb_correct_char = 0;
    bool correct_hidden = 1;
 
-   std::vector<std::string> filename_vector = disk_->GetCAT();
+   std::vector<std::string> filename_vector = disk_->GetCAT(ret);
 
    // Get disk name
    std::string disk_filename = GetCurrentLoadedDisk();
@@ -681,7 +681,7 @@ DiskGen::AutorunType DiskGen::GetAutorun(char* buffer, unsigned int size_of_buff
    }
 
    if (end || strlen(buffer) > 0)
-      ret = AUTO_FILE;
+      ret = IDisk::AUTO_FILE;
 
    return ret;
 }
