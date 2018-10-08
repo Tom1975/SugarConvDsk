@@ -79,3 +79,15 @@ only_commits:
     - CPCCoreEMu/
     - Tests/
 
+deploy:
+  release: SugarConvDsk-v1.0.$(appveyor_build_version)
+  description: SugarConvDsk
+  provider: GitHub
+  auth_token:
+    secure: 0793710b53a116e82348cf6a90c864f9445d7c21
+  artifact: /.*\SugarConvDsk*.*
+  draft: false
+  prerelease: true
+  on:
+    branch: master                 # release from master branch only
+    appveyor_repo_tag: true        # deploy on tag push only
