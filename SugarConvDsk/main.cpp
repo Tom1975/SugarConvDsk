@@ -182,10 +182,12 @@ out:
 
 #else
 
-#include "stdafx.h"
-#include "DiskGen.h"
-#include "DiskBuilder.h"
-#include "FileAccess.h"
+#include "CPCCoreEmu/stdafx.h"
+#include "CPCCoreEmu/DiskGen.h"
+#include "CPCCoreEmu/DiskBuilder.h"
+#include "CPCCoreEmu/FileAccess.h"
+#include "CPCCoreEmu/IDisk.h"
+
 
 
 #ifdef __unix
@@ -533,7 +535,7 @@ int main(int argc, char** argv)
          return -1;
       }
       IDisk::AutorunType autorun_type;
-      std::vector<std::string> file_list = new_disk->GetCAT(autorun_type, user);
+      std::vector<std::string> file_list = new_disk->GetCat(autorun_type, user);
 
       fs::path p (source);
       
