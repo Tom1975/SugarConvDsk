@@ -26,6 +26,7 @@ set(CompilerFlags
         CMAKE_C_FLAGS_RELEASE
         )
 
+
 if(CMAKE_COMPILER_IS_GNUCC)
 	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
 endif()
@@ -34,10 +35,22 @@ set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
 include_directories (SugarConvDsk
 					 )
+set(CMAKE_CXX_STANDARD 17)
+
+
+if (USE_SHARED_CRT)
+else()
+   foreach(CompilerFlag ${CompilerFlags})
+     string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+   endforeach()
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCC)
+	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
+endif()
 
 if(MSVC)
 	target_link_libraries ( SugarConvDsk zlibstatic CPCCoreEmu)
 else ()
 	target_link_libraries ( SugarConvDsk  m stdc++fs libz.a CPCCoreEmu)
 endif()
-
