@@ -20,10 +20,10 @@ set(CompilerFlags
         CMAKE_CXX_FLAGS
         CMAKE_CXX_FLAGS_DEBUG
         CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_CXX_FLAGS_RELWITHDEBINFO
         CMAKE_C_FLAGS
         CMAKE_C_FLAGS_DEBUG
         CMAKE_C_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
 		_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING 
         )
 
@@ -52,18 +52,13 @@ endif()
 # Link test executable against gtest & gtest_main
 
 if(MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")  
 	target_link_libraries ( Tests zlibstatic CPCCoreEmu gtest gtest_main )
 else ()
 	target_link_libraries ( Tests  m stdc++fs libz.a CPCCoreEmu gtest gtest_main )
 endif()
 
 add_test( NAME Tests COMMAND Tests)
-
-if(CMAKE_COMPILER_IS_GNUCC)
-	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
-endif()
-
-set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
 if( MSVC)
 	install ( FILES ${SugarConvDsk_BINARY_DIR}/Debug/SugarConvDsk.exe CONFIGURATIONS Debug  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug )

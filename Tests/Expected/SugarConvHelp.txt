@@ -8,6 +8,7 @@ Usage : SugarConvDsk source [destination] [-s=side] [-second=side_2_path][-o=out
     -o=outputformat : Select output format. Can take the following values:
         EDSK : Extended Dsk format
         HFE : HFE format
+        HFEv3 : HFE v3 format
         IPF : IPF format
         SCP : Supercard Pro format
     If this parameter is not used, default output format is IPF
@@ -18,6 +19,7 @@ Usage : SugarConvDsk source [destination] [-s=side] [-second=side_2_path][-o=out
         DSK : Dsk format
         EDSK : Extended Dsk format
         HFE : HFE format
+        HFEv3 : HFE v3 format
         IPF : IPF format
         SCP : Supercard Pro format
         KRYOFLUX : Kryoflux RAW file format

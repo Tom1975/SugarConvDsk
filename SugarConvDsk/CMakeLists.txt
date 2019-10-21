@@ -27,10 +27,6 @@ set(CompilerFlags
         )
 
 
-if(CMAKE_COMPILER_IS_GNUCC)
-	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
-endif()
-
 set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
 include_directories (SugarConvDsk
@@ -51,6 +47,8 @@ endif()
 
 if(MSVC)
 	target_link_libraries ( SugarConvDsk zlibstatic CPCCoreEmu)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")  
+	ADD_DEFINITIONS(/arch:SSE2)
 else ()
 	target_link_libraries ( SugarConvDsk  m stdc++fs libz.a CPCCoreEmu)
 endif()

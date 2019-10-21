@@ -19,7 +19,7 @@
 #include "IDisk.h"
 #include "FileAccess.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 const fs::path out_dir = "out";
 const fs::path expected_dir = "Expected";
@@ -103,7 +103,7 @@ TEST(SugarConvDsk, Display_Help)
 // TODO : Do not depends on CR/LF ending lines
 TEST(SugarConvDsk, DISABLED_Display_Help)
 #endif
-{
+ {
 	const fs::path out_file = "SugarConvHelp.txt";
 
 	fs::path out_path = fs::path(out_dir) / out_file;
