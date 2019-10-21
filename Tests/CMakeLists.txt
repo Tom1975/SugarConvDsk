@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(Tests)
 enable_testing()
 
-include_directories( ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${SugarConvDsk})
+
 
 set(SRCS
 	test.cpp
@@ -12,31 +12,31 @@ set(SRCS
 set(HEADERS
 )
 
-add_executable( Tests   ${SRCS} ${HEADERS})
+#Fichier ressource
+
+add_executable(Tests ${SRCS} ${HEADERS})
+
+include_directories( ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${Tests})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../CPCCore/CPCCoreEmu ${CMAKE_CURRENT_BINARY_DIR}/../zlib)
-target_include_directories( Tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCore ${CMAKE_CURRENT_LIST_DIR}/../zlib)
+
+target_include_directories( Tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../CPCCore/CPCCoreEmu  ${CMAKE_CURRENT_LIST_DIR}/../zlib)
 
 set(CompilerFlags
         CMAKE_CXX_FLAGS
         CMAKE_CXX_FLAGS_DEBUG
         CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
         CMAKE_C_FLAGS
         CMAKE_C_FLAGS_DEBUG
         CMAKE_C_FLAGS_RELEASE
-        CMAKE_CXX_FLAGS_RELWITHDEBINFO
-		_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING 
         )
 
-if(CMAKE_COMPILER_IS_GNUCC)
-	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
-endif()
 
 set ( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
-include_directories (SugarConvDsk
-					 )
-set(CMAKE_CXX_STANDARD 17)
+include_directories (Tests )
 
+set(CMAKE_CXX_STANDARD 17)
 
 if (USE_SHARED_CRT)
 else()
@@ -49,11 +49,10 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} --std=c++1z )
 endif()
 
-# Link test executable against gtest & gtest_main
-
 if(MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")  
 	target_link_libraries ( Tests zlibstatic CPCCoreEmu gtest gtest_main )
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")  
+	ADD_DEFINITIONS(/arch:SSE2)
 else ()
 	target_link_libraries ( Tests  m stdc++fs libz.a CPCCoreEmu gtest gtest_main )
 endif()
@@ -79,7 +78,7 @@ if( MSVC)
 	install ( DIRECTORY "./Ressources" CONFIGURATIONS Release DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/ )
 	install ( DIRECTORY "./Ressources" CONFIGURATIONS RelWithDebInfo DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/ )
 else()
-	install ( FILES ${SugarConvDsk_BINARY_DIR}/SugarConvDsk DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	install ( FILES ${SugarConvDsk_BINARY_DIR}/Tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 	# Output temporary directory
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/out)
